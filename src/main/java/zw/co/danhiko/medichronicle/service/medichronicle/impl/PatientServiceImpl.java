@@ -3,17 +3,16 @@ package zw.co.danhiko.medichronicle.service.medichronicle.impl;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import zw.co.danhiko.medichronicle.dto.PatientUpdateRequest;
 import zw.co.danhiko.medichronicle.models.PatientDetails;
 import zw.co.danhiko.medichronicle.repository.PatientRepository;
 import zw.co.danhiko.medichronicle.service.medichronicle.PatientService;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.FileDoesNotExistException;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.RecordAlreadyExistException;
-
 
 import java.util.Optional;
 
@@ -53,31 +52,32 @@ public class PatientServiceImpl implements PatientService {
 
             return ResponseEntity.ok(patientDetails);
         }
-        @Override
-        public ResponseEntity<PatientDetails> updatePatientById(String nationalId, PatientDetails request){
+
+
+
+    @Override
+    public ResponseEntity<PatientDetails> updatePatientByNationalId(String nationalId, PatientUpdateRequest request) {
         if (patientRepository.existsByNationalId(nationalId))
             throw new RecordAlreadyExistException("patient with id already exist");
-        PatientDetails updatepatientDetails = patientRepository.findByNationalId(nationalId)
+        PatientDetails patientUpdateRequest = patientRepository.findByNationalId(nationalId)
                 .orElseThrow(()->  new FileDoesNotExistException("Patient does not exist"));
-//            PatientDetails patientDetails = patientRepository.findByNationalId(nationalId)
-//                    .orElseThrow(()->  new FileDoesNotExistException("Patient does not exist"));
-//            PatientDetails updatepatientDetails = patientDetails;
 
-        updatepatientDetails.setHospitalName(request.getHospitalName());
-        updatepatientDetails.setChronicDisease(request.getChronicDisease());
-        updatepatientDetails.setPrescription(request.getPrescription());
-        updatepatientDetails.setDayAdmitted(request.getDayAdmitted());
-        updatepatientDetails.setDayDischarged(request.getDayDischarged());
-        updatepatientDetails.setReferral(request.getReferral());
-        updatepatientDetails.setTemperature(request.getTemperature());
-        updatepatientDetails.setBp(request.getBp());
+        patientUpdateRequest.setHospitalName(request.getHospitalName());
+        patientUpdateRequest.setChronicDisease(request.getChronicDisease());
+        patientUpdateRequest.setPrescription(request.getPrescription());
+        patientUpdateRequest.setDayAdmitted(request.getDayAdmitted());
+        patientUpdateRequest.setDayDischarged(request.getDayDischarged());
+        patientUpdateRequest.setReferral(request.getReferral());
+        patientUpdateRequest.setTemperature(request.getTemperature());
+        patientUpdateRequest.setBp(request.getBp());
+        patientUpdateRequest.setDoctorName(request.getDoctorName());
+
+        patientUpdateRequest = patientRepository.save(patientUpdateRequest);
+        return ResponseEntity.ok(patientUpdateRequest);
+    }
 
 
-           updatepatientDetails = patientRepository.save(updatepatientDetails);
-            return ResponseEntity.ok(updatepatientDetails);
-        }
-
-        @Override
+    @Override
         public PatientDetails deletePatient (String nationalId ){
             Optional<PatientDetails> patient = patientRepository.findByNationalId(nationalId);
             if(patient.isEmpty())
@@ -87,4 +87,5 @@ public class PatientServiceImpl implements PatientService {
             return  patient.get();
 
         }
+
     }

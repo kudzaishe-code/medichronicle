@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zw.co.danhiko.medichronicle.dto.PatientUpdateRequest;
 import zw.co.danhiko.medichronicle.models.PatientDetails;
 import zw.co.danhiko.medichronicle.service.medichronicle.PatientService;
 import zw.co.danhiko.medichronicle.service.medichronicle.impl.PatientRegistration;
@@ -37,8 +38,8 @@ public class PatientController {
     }
 
     @PutMapping("/{update-patient-by-id}")
-    public ResponseEntity<PatientDetails> updatePatientbyId(@PathVariable String nationalId , @RequestBody  PatientDetails patientDetails) {
-        return patientService.updatePatientById(nationalId, patientDetails);
+    public ResponseEntity<PatientDetails> updatePatientbyNationalId(@PathVariable String nationalId , @RequestBody PatientUpdateRequest patientUpdateRequest) {
+        return patientService.updatePatientByNationalId(nationalId, patientUpdateRequest);
 
     }
     @DeleteMapping("/{delete-patient-by-id}")
