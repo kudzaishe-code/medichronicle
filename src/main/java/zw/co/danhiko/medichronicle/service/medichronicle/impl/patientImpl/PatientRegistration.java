@@ -1,4 +1,4 @@
-package zw.co.danhiko.medichronicle.service.medichronicle.impl;
+package zw.co.danhiko.medichronicle.service.medichronicle.impl.patientImpl;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package zw.co.danhiko.medichronicle.service.medichronicle.impl;
+package zw.co.danhiko.medichronicle.service.medichronicle.impl.patientImpl;
 
 
 import lombok.Data;
@@ -7,13 +7,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import zw.co.danhiko.medichronicle.dto.PatientUpdateRequest;
+import zw.co.danhiko.medichronicle.dto.patient.PatientUpdateRequest;
 import zw.co.danhiko.medichronicle.models.PatientDetails;
-import zw.co.danhiko.medichronicle.repository.PatientRepository;
-import zw.co.danhiko.medichronicle.service.medichronicle.PatientService;
+import zw.co.danhiko.medichronicle.repository.patient.PatientRepository;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.FileDoesNotExistException;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.RecordAlreadyExistException;
+import zw.co.danhiko.medichronicle.service.medichronicle.impl.patientImpl.PatientRegistration;
+import zw.co.danhiko.medichronicle.service.medichronicle.impl.patientImpl.PatientService;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Data
@@ -31,7 +33,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public ResponseEntity<PatientDetails> getPatientByNationalId(String nationalId) {
+    public ResponseEntity<PatientDetails> getPatientDetailsByNationalId(String nationalId) {
         Optional<PatientDetails> patientDetails = patientRepository.findByNationalId(nationalId);
         if (patientDetails.isEmpty())
             throw new FileDoesNotExistException("patient does not exist");
@@ -56,7 +58,7 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public ResponseEntity<PatientDetails> updatePatientByNationalId(String nationalId, PatientUpdateRequest request) {
+    public ResponseEntity<PatientDetails> updatePatientDetailsByNationalId(String nationalId, PatientUpdateRequest request) {
         if (patientRepository.existsByNationalId(nationalId))
             throw new RecordAlreadyExistException("patient with id already exist");
         PatientDetails patientUpdateRequest = patientRepository.findByNationalId(nationalId)
@@ -88,4 +90,12 @@ public class PatientServiceImpl implements PatientService {
 
         }
 
+    @Override
+    public ResponseEntity<PatientDetails> getPatientsByDateRange(Date dayAdmitted, Date dayDischarged) {
+        Optional<PatientDetails> patientsDetails = patientRepository.getPatientsByDayAdmittedAndDayDischarged(dayAdmitted, dayDischarged);
+        if (patientsDetails.isEmpty())
+            throw new FileDoesNotExistException("patients does not exist");
+        return ResponseEntity.ok(patientsDetails.get());
     }
+
+}

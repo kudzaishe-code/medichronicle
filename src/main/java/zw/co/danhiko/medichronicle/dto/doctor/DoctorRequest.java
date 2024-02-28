@@ -1,4 +1,4 @@
-package zw.co.danhiko.medichronicle.dto;
+package zw.co.danhiko.medichronicle.dto.doctor;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-public class PatientRequest {
-
-    private String nationalId;
-
+public class DoctorRequest {
+    private String doctorIdNumber;
 }

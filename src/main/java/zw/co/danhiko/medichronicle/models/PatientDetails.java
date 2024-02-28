@@ -28,11 +28,13 @@ public class PatientDetails extends SecurityProperties.User {
     private String chronicDisease;
     private String prescription;
     private Date dayAdmitted;
-    private Date dayDischarged;
+   private Date dayDischarged;
+    private Date date;
     private String referral;
     private BigDecimal temperature;
     private BigDecimal bp;
     private  String doctorName;
+    private String doctorIdNumber;
 
 
 }

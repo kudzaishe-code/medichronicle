@@ -1,4 +1,4 @@
-package zw.co.danhiko.medichronicle.controllers;
+package zw.co.danhiko.medichronicle.controllers.patient;
 
 import lombok.RequiredArgsConstructor;
 
@@ -8,10 +8,12 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import zw.co.danhiko.medichronicle.dto.PatientUpdateRequest;
+import zw.co.danhiko.medichronicle.dto.patient.PatientUpdateRequest;
 import zw.co.danhiko.medichronicle.models.PatientDetails;
-import zw.co.danhiko.medichronicle.service.medichronicle.PatientService;
-import zw.co.danhiko.medichronicle.service.medichronicle.impl.PatientRegistration;
+import zw.co.danhiko.medichronicle.service.medichronicle.impl.patientImpl.PatientService;
+import zw.co.danhiko.medichronicle.service.medichronicle.impl.patientImpl.PatientRegistration;
+
+import java.util.Date;
 
 
 @RestController
@@ -27,9 +29,9 @@ public class PatientController {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         return patientService. getAllPatients(pageable);
     }
-    @GetMapping("/{get-patient-by-id}")
-    public ResponseEntity<PatientDetails> getPatientByNationalId(@PathVariable String nationalId) {
-        return patientService.getPatientByNationalId(nationalId);
+    @GetMapping("/get-patient-by-nationalId/{nationalId}")
+    public ResponseEntity<PatientDetails> getPatientDetailsByNationalId(@PathVariable String nationalId) {
+        return patientService.getPatientDetailsByNationalId(nationalId);
     }
 
     @PostMapping("/{create-patient}")
@@ -37,15 +39,20 @@ public class PatientController {
         return patientService.createPatient(request);
     }
 
-    @PutMapping("/{update-patient-by-id}")
-    public ResponseEntity<PatientDetails> updatePatientbyNationalId(@PathVariable String nationalId , @RequestBody PatientUpdateRequest patientUpdateRequest) {
-        return patientService.updatePatientByNationalId(nationalId, patientUpdateRequest);
+    @PutMapping("/update/{nationalId}")
+    public ResponseEntity<PatientDetails> updatePatientDetailsByNationalId(@PathVariable String nationalId ,
+                                                                    @RequestBody PatientUpdateRequest patientUpdateRequest) {
+        return patientService.updatePatientDetailsByNationalId(nationalId, patientUpdateRequest);
 
     }
-    @DeleteMapping("/{delete-patient-by-id}")
+    @DeleteMapping("/delete/{nationalId}")
     public PatientDetails deletePatient(@PathVariable String nationalId) {
         return patientService.deletePatient(nationalId);
     }
+@GetMapping("/get-patient-by-date")
+public ResponseEntity<PatientDetails> getPatientsByDateRange(@RequestParam Date dayAdmitted, @RequestParam Date dayDischarged) {
+    return patientService.getPatientsByDateRange(dayAdmitted, dayDischarged);
 
+}
 
 }

@@ -1,4 +1,4 @@
-package zw.co.danhiko.medichronicle.dto;
+package zw.co.danhiko.medichronicle.dto.patient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
