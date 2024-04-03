@@ -11,10 +11,9 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-public class PatientUpdateRequest {
-
-
-
+public class PatientTreatmentRequest {
+    private String patientNationalId;
+    private String patientName;
     private String hospitalName;
     private String chronicDisease;
     private String prescription;
@@ -23,7 +22,9 @@ public class PatientUpdateRequest {
     private BigDecimal temperature;
     private BigDecimal bp;
     private String doctorName;
-    private String medicationRequest;
+    private String doctorIdNumber;
     private BigDecimal weight;
-
+    private String diagnosis;
+    private BigDecimal height;
+    private BigDecimal pulse;
 }

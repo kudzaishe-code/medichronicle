@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class PatientRegistration {
 
-    private String nationalId;
+    private String patientNationalId;
     private String patientName;
-    private String chronicdisease;
+    private String chronicDisease;
 
 }

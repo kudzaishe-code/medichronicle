@@ -1,4 +1,4 @@
-package zw.co.danhiko.medichronicle.dto.patient;
+package zw.co.danhiko.medichronicle.dto.MedicalRecord;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,19 +11,21 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-public class PatientUpdateRequest {
-
-
-
+public class PatientMedicalRecord {
     private String hospitalName;
     private String chronicDisease;
     private String prescription;
     private Date dayAdmitted;
+    private Date dayDischarged;
     private String referral;
     private BigDecimal temperature;
     private BigDecimal bp;
-    private String doctorName;
     private String medicationRequest;
     private BigDecimal weight;
+    private String sickness;
+    private String diagnosis;
+    private BigDecimal pulse;
+
+
 
 }
