@@ -20,6 +20,7 @@ public interface PrescriptionService {
 
     PrescriptionDetails updatePrescriptionByPatientNationalId(String patientNationalId, PrescriptionDTO prescriptionDTO);
 
+
     boolean isMedicationProvided(Long prescriptionId);
     // Other methods as needed
 }
