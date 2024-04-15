@@ -26,4 +26,5 @@ public class PatientUpdateRequest {
     private String medicationRequest;
     private BigDecimal weight;
 
+
 }

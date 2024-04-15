@@ -9,15 +9,9 @@ import zw.co.danhiko.medichronicle.models.doctor.DoctorDetails;
 
 public interface DoctorService {
     Page<DoctorDetails> getAllDoctors(Pageable pageable);
-
-
     ResponseEntity<DoctorDetails> getDoctorDetailsByDoctorNationalIdIgnoreCase(String doctorNationalId);
-
     ResponseEntity<DoctorDetails> addDoctor(DoctorRegistration request);
     ResponseEntity<DoctorDetails> updateDoctorDetailsByDoctorNationalIdIgnoreCase(String doctorNationalId, Doctor doctor);;
-
-
-
     DoctorDetails deleteDoctor(String doctorNationalId);
 
 

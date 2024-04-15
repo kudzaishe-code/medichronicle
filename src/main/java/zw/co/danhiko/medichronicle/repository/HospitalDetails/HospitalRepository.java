@@ -18,9 +18,15 @@ public interface HospitalRepository extends JpaRepository<HospitalDetails, Long>
  List<HospitalDetails> findHospitalDetailsByHospitalName(String hospitalName);
  boolean existsByHospitalAddress(String hospitalAddress);
 
+   Optional<HospitalDetails> findByHospitalAddressIgnoreCase(String hospitalAddress);
 
     Optional<HospitalDetails> findByHospitalAddress(String hospitalAddress);
 
-    void deleteHospitalByHospitalAddress(String hospitalAddress);
+
+    boolean existsByHospitalNameIgnoreCase(String hospitalName);
+
+    List<HospitalDetails> findByHospitalNameIgnoreCase(String hospitalName);
+
+    void deleteByHospitalAddress(String hospitalAddress);
 }
 

@@ -20,16 +20,12 @@ import java.util.Optional;
 @Service
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
-    private final PatientRepository patientRepository;
-
-
 
     @Override
     public Page<DoctorDetails> getAllDoctors(Pageable pageable) {
 
         return doctorRepository.findAll(pageable);
     }
-
     @Override
     public ResponseEntity<DoctorDetails> getDoctorDetailsByDoctorNationalIdIgnoreCase(String doctorNationalId) {
 
@@ -39,7 +35,7 @@ public class DoctorServiceImpl implements DoctorService {
         return ResponseEntity.ok(doctorDetails.get());
         }
 
-
+@Override
     public ResponseEntity<DoctorDetails> addDoctor(DoctorRegistration request) {
         if (doctorRepository.existsByDoctorNationalIdIgnoreCase(request.getDoctorNationalId()))
             throw new RecordAlreadyExistException("doctor with id already exist");
@@ -60,7 +56,7 @@ public class DoctorServiceImpl implements DoctorService {
      //logic to  update doctor details
         if(doctorRepository.existsByDoctorNationalIdIgnoreCase(doctorNationalId));
         DoctorDetails doctorDetails = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId).get();
-        doctorDetails.setDoctorName(doctorDetails.getDoctorName());
+        doctorDetails.setLocation(doctorDetails.getLocation());
         doctorDetails = doctorRepository.save(doctorDetails);
         return ResponseEntity.ok(doctorDetails);
 //       if (doctorRepository.existsByDoctorNationalIdIgnoreCase(doctorNationalId));
@@ -77,7 +73,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         Optional<DoctorDetails> doctor= doctorRepository.findByDoctorNationalIdIgnoreCase(DoctorNationalId);
         if(doctor.isEmpty())
-            throw new FileDoesNotExistException("patient does not exist");
+            throw new FileDoesNotExistException("doctor does not exist");
 
         doctorRepository.delete(doctor.get());
         return  doctor.get();

@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class HospitalRequest {
     private String hospitalName;
     private String hospitalAddress;
+    private String hospitalContact;
 }

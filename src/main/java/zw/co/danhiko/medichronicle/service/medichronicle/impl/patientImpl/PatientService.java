@@ -14,20 +14,8 @@ import java.util.Date;
 
 public interface PatientService {
     Page<PatientDetails> getAllPatients(Pageable pageable);
-
-
-
     ResponseEntity<PatientDetails> createPatient(PatientRegistration request);
-
-
-
-
-
     PatientDetails deletePatient(String patientNationalId);
-
-
-
-
-
+    ResponseEntity<PatientDetails> updatePatientDetailsByPatientNationalIdIgnoreCase(String patientNationalId, PatientUpdateRequest request);
 }
 

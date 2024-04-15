@@ -1,5 +1,6 @@
 package zw.co.danhiko.medichronicle.service.medichronicle.impl.hospital;
 
+import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import zw.co.danhiko.medichronicle.dto.hospital.HospitalRequest;
+import zw.co.danhiko.medichronicle.dto.hospital.HospitalUpdateRequest;
 import zw.co.danhiko.medichronicle.models.hospital.HospitalDetails;
 import zw.co.danhiko.medichronicle.repository.HospitalDetails.HospitalRepository;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.RecordAlreadyExistException;
@@ -21,6 +23,7 @@ import java.util.Optional;
 @Data
 @RequiredArgsConstructor
 @Service
+@Transactional
 
 public class HospitalServiceImpl implements HospitalService {
     private final HospitalRepository hospitalRepository;
@@ -36,6 +39,7 @@ public class HospitalServiceImpl implements HospitalService {
         // Retrieve hospitals sorted by name
         return hospitalRepository.findAll(sortedPageable);
     }
+
     @Override
     public Optional<HospitalDetails> findHospitalDetailsByAddress(String hospitalAddress) {
         if (!hospitalRepository.existsByHospitalAddress(hospitalAddress)) {
@@ -53,50 +57,57 @@ public class HospitalServiceImpl implements HospitalService {
                 .hospitalName(hospitalRequest.getHospitalName())
                 .hospitalAddress(hospitalRequest.getHospitalAddress())
                 .build();
-
+        hospitalDetails = hospitalRepository.save(hospitalDetails);
         // Assuming HttpStatus.CREATED is appropriate for successful creation
         return new ResponseEntity<>(hospitalDetails, HttpStatus.CREATED);
     }
 
 
-    @Override
-    public ResponseEntity<HospitalDetails> updateHospital(HospitalDetails request, Long id) {
-        if (!hospitalRepository.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        // Assuming hospitalRepository.build() returns the updated hospitalDetails
-        HospitalDetails hospitalDetails = HospitalDetails.builder()
-                .hospitalName(request.getHospitalName())
-                .hospitalAddress(request.getHospitalAddress())
-                .build();
-        // Assuming HttpStatus.OK is appropriate for successful update
-        return new ResponseEntity<>(hospitalDetails, HttpStatus.OK);
-    }
+
+
+//    @Override
+//    public ResponseEntity<HospitalDetails> updateHospital(HospitalDetails request, Long id) {
+//        if (!hospitalRepository.existsById(id)) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//        // Assuming hospitalRepository.build() returns the updated hospitalDetails
+//        HospitalDetails hospitalDetails = HospitalDetails.builder()
+//                .hospitalName(request.getHospitalName())
+//                .hospitalAddress(request.getHospitalAddress())
+//                .build();
+//        hospitalDetails = hospitalRepository.save(hospitalDetails);
+//        return new ResponseEntity<>(hospitalDetails, HttpStatus.OK);
+//    }
 
     @Override
     public ResponseEntity<HospitalDetails> deleteHospital(String hospitalAddress) {
+   //delete hospital
         if (!hospitalRepository.existsByHospitalAddress(hospitalAddress)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        hospitalRepository.deleteHospitalByHospitalAddress(hospitalAddress);
-        return ResponseEntity.ok().build();
+        hospitalRepository.deleteByHospitalAddress(hospitalAddress);
+        return ResponseEntity.noContent().build();
+        }
+
+
+    @Override
+    public List<HospitalDetails> findHospitalByNameIgnoreCase(String hospitalName) {
+        // find hospital by name
+        if (!hospitalRepository.existsByHospitalNameIgnoreCase(hospitalName)) {
+            return Collections.emptyList();
+        }
+        return hospitalRepository.findByHospitalNameIgnoreCase(hospitalName);
     }
 
     @Override
-    public ResponseEntity<HospitalDetails> findHospitalByNameIgnoreCase(String hospitalName) {
-        if (hospitalName == null || hospitalName.isEmpty()) {
-            // Return an empty list if name is null or empty
-            return ResponseEntity.ok((HospitalDetails) Collections.emptyList());
+    public ResponseEntity<HospitalDetails> hospitalUpdate(HospitalUpdateRequest hospitalUpdateRequest, String hospitalAddress) {
+        if (hospitalRepository.existsByHospitalAddress(hospitalAddress)){
+            Optional<HospitalDetails> hospitalDetails = hospitalRepository.findByHospitalAddress(hospitalAddress);
+            hospitalDetails.setHospitalContact(hospitalUpdateRequest.getHospitalContact());
+            hospitalRepository.save(hospitalDetails);
+            return ResponseEntity.ok(hospitalDetails);
+
         }
-
-        List<HospitalDetails> hospitals = hospitalRepository.findHospitalDetailsByHospitalName(hospitalName);
-
-        // Handle the case where no hospitals are found with the given name
-        if (hospitals.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok((HospitalDetails) hospitals);
     }
 }
 

@@ -1,4 +1,4 @@
-package zw.co.danhiko.medichronicle.dto.doctor;
+package zw.co.danhiko.medichronicle.dto.hospital;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-public class Doctor {
-    private String location;
+public class HospitalUpdateRequest {
+    private String hospitalContact;
 }

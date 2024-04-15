@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface PatientRepository extends JpaRepository<PatientDetails, Long> {
     Optional <PatientDetails> findByPatientNationalIdIgnoreCase(String patientNationalId);
 
-
+ ;
     boolean existsByPatientNationalIdIgnoreCase(String patientNationalId);
 
 

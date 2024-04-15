@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import zw.co.danhiko.medichronicle.models.PrescriptionDetails.PrescriptionDetails;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -23,7 +24,8 @@ public class MedicalRecords {
     @Column(unique = true)
     private String patientNationalId;
     private String chronicDisease;
-    private String prescription;
+    @ManyToOne
+    private PrescriptionDetails prescription;
     private Date dayAdmitted;
     private String referral;
     private BigDecimal temperature;
@@ -35,8 +37,5 @@ public class MedicalRecords {
     private BigDecimal pulse;
     @Column(unique = true)
     private String doctorNationalId;
+ ;
 }
-
-
-
-

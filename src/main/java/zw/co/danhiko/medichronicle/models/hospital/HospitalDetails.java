@@ -23,6 +23,7 @@ public class HospitalDetails {
     @Column(unique = true)
     private String hospitalName;
     private String hospitalAddress;
+    private String hospitalContact;
 
     @OneToMany(mappedBy = "hospitalDetails", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DoctorDetails> doctors = new HashSet<>();

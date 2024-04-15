@@ -8,6 +8,7 @@ import zw.co.danhiko.medichronicle.dto.Prescription.PrescriptionDTO;
 import zw.co.danhiko.medichronicle.models.PrescriptionDetails.PrescriptionDetails;
 import zw.co.danhiko.medichronicle.service.medichronicle.impl.prescriptionImpl.PrescriptionService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -15,14 +16,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/prescriptions")
 public class PrescriptionController {
-
     private final PrescriptionService prescriptionService;
-
-
-
     @PostMapping("/create-prescription-by-patient-national-id-and-doctor-national-id/create")
-    public ResponseEntity<List<PrescriptionDetails>> createPrescription(@RequestBody PrescriptionDetails prescription, @RequestParam String patientNationalId, @RequestParam String doctorNationalId) {
-        List<PrescriptionDetails> createdPrescriptions = prescriptionService.createPrescription(prescription, patientNationalId, doctorNationalId);
+    public ResponseEntity<List<PrescriptionDetails>> createPrescription(@RequestParam String patientNationalId, @RequestParam String doctorNationalId, LocalDate medicalRecordCreationDate) {
+        List<PrescriptionDetails> createdPrescriptions = prescriptionService.createPrescription(patientNationalId,  doctorNationalId,medicalRecordCreationDate);
         return new ResponseEntity<>(createdPrescriptions, HttpStatus.CREATED);
     }
 
@@ -47,4 +44,15 @@ public class PrescriptionController {
     public boolean isMedicationProvided(@PathVariable Long prescriptionId) {
         return prescriptionService.isMedicationProvided(prescriptionId);
     }
+// getPrescriptionsForPatient
+    @GetMapping("/get-prescriptions-for-patient/{patientNationalId}")
+    public List<PrescriptionDetails> getPrescriptionsForPatient(@PathVariable String patientNationalId) {
+        return prescriptionService.getPrescriptionsForPatient(patientNationalId);
+    }
+    @GetMapping("/is-medication-provided/{patientNationalId}")
+    public boolean isMedicationProvided(@PathVariable String patientNationalId) {
+
+        return prescriptionService.isMedicationProvided(patientNationalId);
+    }
+
 }
