@@ -26,13 +26,9 @@ import java.util.List;
 public class PrescriptionServiceImpl implements PrescriptionService {
 
     private PrescriptionRepository prescriptionRepository;
-
     private PatientRepository patientRepository;
-
     private DoctorRepository doctorRepository;
-
     private PharmacyRepository pharmacyRepository;
-
     private MedicalRecordsRepository medicalRecordRepository;
 
     @Override

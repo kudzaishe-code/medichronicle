@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-public class PharmacyUpdateRequest {
+public class PharmacyRegistration {
     private String pharmacyName;
+    private String pharmacyAddress;
     private String pharmacyPhoneNumber;
+
 }

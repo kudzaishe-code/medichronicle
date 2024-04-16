@@ -1,9 +1,9 @@
 package zw.co.danhiko.medichronicle.controllers.Pharmacy;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import zw.co.danhiko.medichronicle.dto.Pharmacy.PharmacyRegistration;
 import zw.co.danhiko.medichronicle.dto.Pharmacy.PharmacyUpdateRequest;
 import zw.co.danhiko.medichronicle.models.Pharmacy.PharmacyDetails;
 import zw.co.danhiko.medichronicle.service.medichronicle.impl.PharmarcyImpl.PharmacyService;
@@ -20,24 +20,29 @@ public class PharmacyController {
 
 
     @PostMapping("/create")
-    public Optional<PharmacyDetails> createPharmacy(@RequestBody PharmacyDetails pharmacy) {
-        PharmacyDetails createdPharmacy = pharmacyService.createPharmacy(pharmacy);
-        return Optional.of(createdPharmacy);
-    }
+    public ResponseEntity<PharmacyDetails> createPharmacy(@RequestBody PharmacyRegistration pharmacy) {
+       return pharmacyService.createPharmacy(pharmacy);
 
-    @GetMapping("/get-pharmacy-by-id{id}")
-    public ResponseEntity<PharmacyDetails> getPharmacyById(@PathVariable Long id) {
-        PharmacyDetails pharmacy = pharmacyService.getPharmacyById(id);
-        return new ResponseEntity<>(pharmacy, HttpStatus.OK);
     }
+@GetMapping("/get-pharmacy-details-by-pharmacyAddress/{pharmacyAddress}")
+public ResponseEntity<PharmacyDetails> getPharmacyDetailsByPharmacyAddress(@PathVariable String pharmacyAddress) {
+
+    return pharmacyService.getPharmacyDetailsByPharmacyAddress(pharmacyAddress);
+
+}
+//    @GetMapping("/get-pharmacy-by-pharmacyAddress{pharmacyAddress}")
+//    public ResponseEntity<Optional<PharmacyDetails>> getPharmacyByPharmacyAddress(@PathVariable String pharmacyAddress) {
+//        return pharmacyService.getPharmacyDetailsByPharmacyAddress(pharmacyAddress);
+//
+//    }
 
 //update pharmacy
-    @PutMapping("/update-pharmacy-by-id/{id}")
-    public List<PharmacyDetails> updatePharmacy(@PathVariable Long id, @RequestBody PharmacyUpdateRequest pharmacy) {
-        return pharmacyService.updatePharmacy(id, pharmacy);
+    @PutMapping("/update-pharmacy-by-pharmacyAddress/{pharmacyAddress}")
+    public List<PharmacyDetails> updatePharmacyByPharmacyAddress(@PathVariable String pharmacyAddress, @RequestBody PharmacyUpdateRequest pharmacy) {
+        return pharmacyService.updatePharmacy(pharmacyAddress, pharmacy);
     }
-    @DeleteMapping("/delete-pharmacy-by-id/{id}")
-    public void deletePharmacy(@PathVariable Long id) {
-        pharmacyService.deletePharmacy(id);
+    @DeleteMapping("/delete-pharmacy-by-pharmacyAddress/{pharmacyAddress}")
+    public void deletePharmacy(@PathVariable String pharmacyAddress) {
+        pharmacyService.deletePharmacy(pharmacyAddress);
     }
 }

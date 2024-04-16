@@ -18,7 +18,5 @@ public interface HospitalService {
     ResponseEntity<HospitalDetails> createHospital(HospitalRequest hospitalRequest);
     ResponseEntity<HospitalDetails> deleteHospital(String hospitalAddress);
     List<HospitalDetails> findHospitalByNameIgnoreCase(String hospitalName);
-    ResponseEntity<HospitalDetails>hospitalUpdate(HospitalUpdateRequest hospitalUpdateRequest);
-
     ResponseEntity<HospitalDetails> hospitalUpdate(HospitalUpdateRequest hospitalUpdateRequest, String hospitalAddress);
 }

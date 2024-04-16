@@ -15,7 +15,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 public class PatientTreatmentRequest {
-   // private String patientNationalId;
+    private String patientNationalId;
   //  private String patientName;
    // private String hospitalName;
    // private String chronicDisease;
@@ -29,15 +29,16 @@ public class PatientTreatmentRequest {
   //  private BigDecimal weight;
  //   private String diagnosis;
  //   private BigDecimal height;
- //   private BigDecimal pulse;
-  //  private String hospitalAddress;
- private PrescriptionDTO prescription;
- private Date dayAdmitted;
- private String referral;
- private BigDecimal temperature;
- private BigDecimal bp;
- private BigDecimal weight;
- private String diagnosis;
+    private BigDecimal pulse;
+    private String hospitalAddress;
+    private String doctorNationalId;
+    private PrescriptionDTO prescription;
+    private Date dayAdmitted;
+    private String referral;
+    private BigDecimal temperature;
+    private BigDecimal bp;
+    private BigDecimal weight;
+    private String diagnosis;
 
 
 

@@ -17,8 +17,12 @@ public interface MedicalRecordService {
     //updatePatientMedicalRecordsByNationalId
     ResponseEntity<MedicalRecords> updatePatientMedicalRecordsByPatientNationalId(String patientNationalId, Patient patient);
    List<MedicalRecords> getPatientMedicalRecordsByDoctorNationalId(String patientNationalId);
-// create a patient medical record using doctor national id and patient national id
-    ResponseEntity<MedicalRecords> createPatientMedicalRecord( PatientTreatmentRequest patientTreatmentRequest ,String doctorNationalId, String patientNationalId);
+  //  ResponseEntity<MedicalRecords> createPatientMedicalRecord(PatientTreatmentRequest patientTreatmentRequest, String hospitalAddress, String doctorNationalId, String patientNationalId);
+
+   // MedicalRecords createMedicalRecord(MedicalRecordRequest request);
+
+    ResponseEntity<MedicalRecords>createMedicalRecord(PatientTreatmentRequest request);
+
     List<MedicalRecords> getAllPatientsMedicalRecords();
 
     ResponseEntity<MedicalRecords> deleteAllMedicalRecords();

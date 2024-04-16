@@ -24,7 +24,7 @@ import java.util.Optional;
 @Data
 @RequiredArgsConstructor
 @Service
-public class MedicalRecordsServiceImpl implements MedicalRecordService {
+   public class MedicalRecordsServiceImpl implements MedicalRecordService {
     private final MedicalRecordsRepository medicalRecordsRepository;
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
@@ -91,39 +91,73 @@ public class MedicalRecordsServiceImpl implements MedicalRecordService {
 
         return medicalRecordsRepository.findAllPatientsMedicalRecordsByDoctorNationalId(doctorNationalId);
     }
-
-
     @Override
-    public ResponseEntity<MedicalRecords> createPatientMedicalRecord(PatientTreatmentRequest patientTreatmentRequest, String doctorNationalId, String patientNationalId) {
+    public ResponseEntity<MedicalRecords> createMedicalRecord(PatientTreatmentRequest request) {
+        // Retrieve doctor, patient, and hospital details from the database
+        DoctorDetails doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(request.getDoctorNationalId()).orElseThrow(() -> new RuntimeException("Doctor not found"));
+        PatientDetails patient = patientRepository.findByPatientNationalIdIgnoreCase(request.getPatientNationalId()).orElseThrow(() -> new RuntimeException("Patient not found"));
+        HospitalDetails hospital = hospitalRepository.findByHospitalAddressIgnoreCase(request.getHospitalAddress()).orElseThrow(() -> new RuntimeException("Hospital not found"));
 
-        Optional<PatientDetails> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
-        if (patient.isEmpty()) {
-            throw new FileDoesNotExistException("patient does not exist");
-        }
-        Optional<DoctorDetails> doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
-        if (doctor.isEmpty()) {
+        // Create a new medical record and set doctor, patient, and hospital details
+        MedicalRecords medicalRecord = new MedicalRecords();
+        medicalRecord.setDoctor(doctor);
+        medicalRecord.setPatient(patient);
+        medicalRecord.setHospital(hospital);
+        medicalRecord.setPatientName(patient.getPatientName());
+        medicalRecord.setChronicDisease(patient.getChronicDisease());
+        medicalRecord.setDayAdmitted(request.getDayAdmitted());
+      //  medicalRecord.setPrescription(request.getPrescription());
+        medicalRecord.setReferral(request.getReferral());
+        medicalRecord.setTemperature(request.getTemperature());
+        medicalRecord.setBp(request.getBp());
+        medicalRecord.setWeight(request.getWeight());
+        medicalRecord.setDiagnosis(request.getDiagnosis());
 
-            throw new FileDoesNotExistException("doctor does not exist");
+        //  .prescription(patientTreatmentRequest.getPrescription())
+//                .dayAdmitted(request.getDayAdmitted())
+//                .referral(patientTreatmentRequest.getReferral())
+//                .temperature(patientTreatmentRequest.getTemperature())
+//                .bp(patientTreatmentRequest.getBp())
+//                .weight(patientTreatmentRequest.getWeight())
+//                .diagnosis(patientTreatmentRequest.getDiagnosis())
+        // Set other fields from the request
 
-        }
-        Optional<HospitalDetails> hospital = hospitalRepository.findById(1L);
-        if (hospital.isEmpty()) {
-            throw new FileDoesNotExistException("hospital does not exist");
-        }
-        MedicalRecords medicalRecords = MedicalRecords.builder()
-              //  .prescription(patientTreatmentRequest.getPrescription())
-                .dayAdmitted(patientTreatmentRequest.getDayAdmitted())
-                .referral(patientTreatmentRequest.getReferral())
-                .temperature(patientTreatmentRequest.getTemperature())
-                .bp(patientTreatmentRequest.getBp())
-                .weight(patientTreatmentRequest.getWeight())
-                .diagnosis(patientTreatmentRequest.getDiagnosis())
-                .build();
-
-
-            medicalRecordsRepository.save(medicalRecords);
-            return ResponseEntity.ok(medicalRecords);
+        // Save the medical record to the database
+       medicalRecordsRepository.save(medicalRecord);
+        return ResponseEntity.ok(medicalRecord);
     }
+
+//    @Override
+//    public ResponseEntity<MedicalRecords> createPatientMedicalRecord(PatientTreatmentRequest patientTreatmentRequest,String hospitalAddress, String doctorNationalId, String patientNationalId) {
+//
+//        Optional<PatientDetails> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
+//        if (patient.isEmpty()) {
+//            throw new FileDoesNotExistException("patient does not exist");
+//        }
+//        Optional<DoctorDetails> doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
+//        if (doctor.isEmpty()) {
+//
+//            throw new FileDoesNotExistException("doctor does not exist");
+//
+//        }
+//        Optional<HospitalDetails> hospital = hospitalRepository.findByHospitalAddressIgnoreCase(hospitalAddress);
+//        if (hospital.isEmpty()) {
+//            throw new FileDoesNotExistException("hospital does not exist");
+//        }
+//        MedicalRecords medicalRecords = MedicalRecords.builder()
+//              //  .prescription(patientTreatmentRequest.getPrescription())
+//                .dayAdmitted(patientTreatmentRequest.getDayAdmitted())
+//                .referral(patientTreatmentRequest.getReferral())
+//                .temperature(patientTreatmentRequest.getTemperature())
+//                .bp(patientTreatmentRequest.getBp())
+//                .weight(patientTreatmentRequest.getWeight())
+//                .diagnosis(patientTreatmentRequest.getDiagnosis())
+//                .build();
+//
+//
+//            medicalRecordsRepository.save(medicalRecords);
+//            return ResponseEntity.ok(medicalRecords);
+//    }
 
     @Override
     public List<MedicalRecords> getAllPatientsMedicalRecords() {

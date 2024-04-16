@@ -9,7 +9,6 @@ import zw.co.danhiko.medichronicle.models.medicalRecords.MedicalRecords;
 import zw.co.danhiko.medichronicle.service.medichronicle.impl.medicalRecordsImpl.MedicalRecordService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,12 +17,12 @@ import java.util.Optional;
 public class MedicalRecordController {
 
     private final MedicalRecordService medicalRecordService;
-    @PostMapping("/create-medical-record/{patientNationalId}/{doctorNationalId}")
-    public ResponseEntity<?> createMedicalRecord(@RequestBody  PatientTreatmentRequest patientTreatmentRequest,String patientNationalId,String doctorNationalId) {
-        // Logic to handle the creation of a medical record
-        medicalRecordService.createPatientMedicalRecord(patientTreatmentRequest, doctorNationalId, patientNationalId);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/create-medical-record/{patientNationalId}/{doctorNationalId}")
+//    public ResponseEntity<?> createMedicalRecord(@RequestBody  PatientTreatmentRequest patientTreatmentRequest,String hospitalAddress,String patientNationalId,String doctorNationalId) {
+//        // Logic to handle the creation of a medical record
+//        medicalRecordService.createPatientMedicalRecord(patientTreatmentRequest,hospitalAddress, doctorNationalId, patientNationalId);
+//        return ResponseEntity.ok().build();
+//    }
   //  @PostMapping("/create-patient-medical-record")
  //   public ResponseEntity<MedicalRecords> createPatientMedicalRecord(@RequestBody PatientTreatmentRequest patientTreatmentRequest, @RequestParam String doctorNationalId, @RequestParam String patientNationalId) {
  //       return medicalRecordService.createPatientMedicalRecord(patientTreatmentRequest, doctorNationalId, patientNationalId);
@@ -63,4 +62,9 @@ public class MedicalRecordController {
         return medicalRecordService.deleteAllMedicalRecords();
 
     }
+@PostMapping("/create-medical-record")
+public ResponseEntity<MedicalRecords> createMedicalRecord(@RequestBody PatientTreatmentRequest patientTreatmentRequest){
+
+    return medicalRecordService.createMedicalRecord(patientTreatmentRequest);
+}
 }

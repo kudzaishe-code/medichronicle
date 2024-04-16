@@ -19,17 +19,13 @@ public class PharmacyDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-private String pharmacyName;
-private String address;
-private String phoneNumber;
-
+    private String pharmacyName;
+    private String pharmacyAddress;
+    private String pharmacyPhoneNumber;
 
     @OneToMany(mappedBy = "pharmacy", cascade = CascadeType.ALL)
     private Set<PrescriptionDetails> prescriptions = new HashSet<>();
-
     public void setMedicationRequest(String string) {
-
-
     }
 
 }

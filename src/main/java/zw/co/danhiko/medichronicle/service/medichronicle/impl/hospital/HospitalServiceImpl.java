@@ -3,6 +3,7 @@ package zw.co.danhiko.medichronicle.service.medichronicle.impl.hospital;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +16,13 @@ import zw.co.danhiko.medichronicle.dto.hospital.HospitalUpdateRequest;
 import zw.co.danhiko.medichronicle.models.hospital.HospitalDetails;
 import zw.co.danhiko.medichronicle.repository.HospitalDetails.HospitalRepository;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.RecordAlreadyExistException;
+import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.RecordNotFoundException;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static io.micrometer.core.ipc.http.HttpSender.Request.build;
 
 @Data
 @RequiredArgsConstructor
@@ -101,15 +105,19 @@ public class HospitalServiceImpl implements HospitalService {
 
     @Override
     public ResponseEntity<HospitalDetails> hospitalUpdate(HospitalUpdateRequest hospitalUpdateRequest, String hospitalAddress) {
-        if (hospitalRepository.existsByHospitalAddress(hospitalAddress)){
-            Optional<HospitalDetails> hospitalDetails = hospitalRepository.findByHospitalAddress(hospitalAddress);
-            hospitalDetails.setHospitalContact(hospitalUpdateRequest.getHospitalContact());
-            hospitalRepository.save(hospitalDetails);
-            return ResponseEntity.ok(hospitalDetails);
-
+        if (hospitalRepository.existsByHospitalAddress(hospitalAddress)) {
+            // Optional<HospitalDetails> hospitalDetails = hospitalRepository.findByHospitalAddress(hospitalAddress);
+            throw new RecordNotFoundException("hospital does not exist");
         }
+        HospitalDetails hospitalDetails = HospitalDetails.builder()
+                .hospitalContact(hospitalUpdateRequest.getHospitalContact())
+                    .build();
+            hospitalDetails = hospitalRepository.save(hospitalDetails);
+            return new ResponseEntity<>(hospitalDetails, HttpStatus.OK);
+        }
+
     }
-}
+
 
 
 

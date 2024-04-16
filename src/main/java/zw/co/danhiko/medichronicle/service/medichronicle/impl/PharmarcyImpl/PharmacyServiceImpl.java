@@ -3,60 +3,61 @@ package zw.co.danhiko.medichronicle.service.medichronicle.impl.PharmarcyImpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
+import zw.co.danhiko.medichronicle.dto.Pharmacy.PharmacyRegistration;
 import zw.co.danhiko.medichronicle.dto.Pharmacy.PharmacyUpdateRequest;
 import zw.co.danhiko.medichronicle.models.Pharmacy.PharmacyDetails;
 import zw.co.danhiko.medichronicle.repository.Pharmacy.PharmacyRepository;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @RequiredArgsConstructor
 @Service
 public class PharmacyServiceImpl implements PharmacyService {
     private final PharmacyRepository pharmacyRepository;
-
-
     @Override
-    public PharmacyDetails createPharmacy(PharmacyDetails pharmacy) {
-        return pharmacyRepository.save(pharmacy);
+    public ResponseEntity<PharmacyDetails> createPharmacy(PharmacyRegistration pharmacy) {
+        if (pharmacyRepository.existsByPharmacyAddress(pharmacy.getPharmacyAddress()))
+            throw new RuntimeException("pharmacy already exists");
+             PharmacyDetails pharmacyDetails = PharmacyDetails.builder()
+                     .pharmacyName(pharmacy.getPharmacyName())
+                     .pharmacyAddress(pharmacy.getPharmacyAddress())
+                     .pharmacyPhoneNumber(pharmacy.getPharmacyPhoneNumber())
+                     .build();
+            return ResponseEntity.ok(pharmacyDetails);
     }
 
     @Override
-    public PharmacyDetails getPharmacyById(Long id) {
-        return (PharmacyDetails) pharmacyRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Pharmacy not found with id: " + id));
+    public ResponseEntity<PharmacyDetails> getPharmacyDetailsByPharmacyAddress(String pharmacyAddress) {
+        if(!pharmacyRepository.existsByPharmacyAddress(pharmacyAddress))
+            throw  new RuntimeException("pharmacy does not exist");
+       return ResponseEntity.ok(pharmacyRepository.getPharmacyDetailsByPharmacyAddress(pharmacyAddress).getBody());
+
+
     }
-
     @Override
-    public List<PharmacyDetails> updatePharmacy(Long pharmacyId, PharmacyUpdateRequest updateRequest) {
-        // Retrieve the pharmacy entity from the database
-        PharmacyDetails pharmacy = pharmacyRepository.findById(pharmacyId)
-                .orElseThrow(() -> new EntityNotFoundException("Pharmacy not found with id: " + pharmacyId));
-
-        // Update the pharmacy details based on the update request
-        if (updateRequest.getPharmacyName() != null) {
-            pharmacy.setPharmacyName(updateRequest.getPharmacyName());
+    public List<PharmacyDetails> updatePharmacy(String pharmacyAddress, PharmacyUpdateRequest pharmacyUpdateRequest) {
+        // Check if the pharmacy exists
+        Optional<PharmacyDetails> pharmacyDetails = pharmacyRepository.findByPharmacyAddress(pharmacyAddress);
+        if (pharmacyDetails == null) {
+            throw new RuntimeException("Pharmacy with address " + pharmacyAddress + " does not exist");
         }
-        if (updateRequest.getPhoneNumber() != null) {
-            pharmacy.setPhoneNumber(updateRequest.getPhoneNumber());
-        }
 
-        // Save the updated pharmacy entity
-        pharmacyRepository.save(pharmacy);
-
-        // Retrieve and return all pharmacies after the update
-        return pharmacyRepository.findAll();
+        // Update the pharmacy details
+        pharmacyDetails.get().setPharmacyName(pharmacyUpdateRequest.getPharmacyName());
+        pharmacyDetails.get().setPharmacyPhoneNumber(pharmacyUpdateRequest.getPharmacyPhoneNumber());
+        // Save the updated pharmacy details
+       // return pharmacyRepository.save(pharmacyDetails);
+        return Collections.singletonList(pharmacyRepository.save(pharmacyDetails.get()));
     }
-
 
     @Override
-    public void deletePharmacy(Long id) {
+    public void deletePharmacy(String pharmacyAddress) {
 
-        pharmacyRepository.deleteById(id);
-
+        pharmacyRepository.deleteByPharmacyAddress(pharmacyAddress);
     }
-
-    // Implement other methods as needed
 }
