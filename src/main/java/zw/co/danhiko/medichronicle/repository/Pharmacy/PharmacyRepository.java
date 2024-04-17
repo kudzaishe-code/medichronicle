@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import zw.co.danhiko.medichronicle.models.Pharmacy.PharmacyDetails;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,5 +19,6 @@ public interface PharmacyRepository extends JpaRepository<PharmacyDetails, Long>
 Optional<PharmacyDetails> findByPharmacyAddress(String pharmacyAddress);
 
     void deleteByPharmacyAddress(String pharmacyAddress);
+    ResponseEntity<PharmacyDetails> getAll(Pageable pageable);
 
 }

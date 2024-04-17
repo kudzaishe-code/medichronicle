@@ -1,6 +1,5 @@
 package zw.co.danhiko.medichronicle.service.medichronicle.impl.PharmarcyImpl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -60,4 +59,9 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         pharmacyRepository.deleteByPharmacyAddress(pharmacyAddress);
     }
+    @Override
+    public List<PharmacyDetails> getAll() {
+        return pharmacyRepository.findAll();
+    }
+
 }
