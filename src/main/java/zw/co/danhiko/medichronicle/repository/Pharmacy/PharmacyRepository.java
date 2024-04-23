@@ -12,13 +12,16 @@ import java.util.Optional;
 @Repository
 public interface PharmacyRepository extends JpaRepository<PharmacyDetails, Long> {
     Optional<PharmacyDetails> findById(Long id);
+
     boolean existsByPharmacyAddress(String pharmacyAddress);
+
     ResponseEntity<PharmacyDetails> getPharmacyDetailsByPharmacyAddress(String pharmacyAddress);
+
     List<PharmacyDetails> findAll();
+
     void deleteById(Long id);
-Optional<PharmacyDetails> findByPharmacyAddress(String pharmacyAddress);
+
+    Optional<PharmacyDetails> findByPharmacyAddress(String pharmacyAddress);
 
     void deleteByPharmacyAddress(String pharmacyAddress);
-    ResponseEntity<PharmacyDetails> getAll(Pageable pageable);
-
 }

@@ -20,47 +20,47 @@ import java.util.Optional;
 @Service
 public class PatientServiceImpl implements PatientService {
 
-  private final PatientRepository patientRepository;
-
+    private final PatientRepository patientRepository;
 
 
     @Override
     public Page<PatientDetails> getAllPatients(Pageable pageable) {
         return patientRepository.findAll(pageable);
     }
+
     @Override
     public ResponseEntity<PatientDetails> createPatient(PatientRegistration request) {
         if (patientRepository.existsByPatientNationalIdIgnoreCase(request.getPatientNationalId()))
             throw new RecordAlreadyExistException("patient  with id already exist");
-            PatientDetails patientDetails = PatientDetails.builder()
-                    .patientName(request.getPatientName())
-                    .patientNationalId(request.getPatientNationalId())
-                    .chronicDisease(request.getChronicDisease())
-                    .build();
-            patientDetails = patientRepository.save(patientDetails);
+        PatientDetails patientDetails = PatientDetails.builder()
+                .patientName(request.getPatientName())
+                .patientNationalId(request.getPatientNationalId())
+                .chronicDisease(request.getChronicDisease())
+                .build();
+        patientDetails = patientRepository.save(patientDetails);
 
-            return ResponseEntity.ok(patientDetails);
-        }
-    @Override
-        public PatientDetails deletePatient (String patientNationalId ){
-            Optional<PatientDetails> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
-            if(patient.isEmpty())
-                throw new FileDoesNotExistException("patient does not exist");
-
-            patientRepository.delete(patient.get());
-            return  patient.get();
+        return ResponseEntity.ok(patientDetails);
     }
-@Override
-public ResponseEntity<PatientDetails> updatePatientDetailsByPatientNationalIdIgnoreCase(String patientNationalId, PatientUpdateRequest request) {
 
-    //logic to  update patient details
+    @Override
+    public PatientDetails deletePatient(String patientNationalId) {
+        Optional<PatientDetails> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
+        if (patient.isEmpty())
+            throw new FileDoesNotExistException("patient does not exist");
+
+        patientRepository.delete(patient.get());
+        return patient.get();
+    }
+
+    @Override
+    public ResponseEntity<PatientDetails> updatePatientDetailsByPatientNationalIdIgnoreCase(String patientNationalId, PatientUpdateRequest request) {
+
+        //logic to  update patient details
         if (!patientRepository.existsByPatientNationalIdIgnoreCase(patientNationalId))
             throw new FileDoesNotExistException("patient does not exist");
         PatientDetails patientDetails = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId).get();
         patientDetails.setChronicDisease(request.getChronicDisease());
         patientDetails = patientRepository.save(patientDetails);
         return ResponseEntity.ok(patientDetails);
+    }
 }
-}
-
-

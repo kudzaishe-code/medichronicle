@@ -1,6 +1,7 @@
 package zw.co.danhiko.medichronicle.service.medichronicle.impl.medicalRecordsImpl;
 
 
+import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ import java.util.Optional;
     public List<MedicalRecords> getPatientMedicalRecordByPatientNationalId(String patientNationalId) {
 
         Optional<PatientDetails> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
-        if (patient == null)
+        if (patient.isEmpty())
             throw new FileDoesNotExistException("patient does not exist");
        List<MedicalRecords> medicalRecords = medicalRecordsRepository.findAllByPatientNationalIdIgnoreCase(patientNationalId);
         return ResponseEntity.ok(medicalRecords).getBody();
@@ -91,27 +92,58 @@ import java.util.Optional;
 
         return medicalRecordsRepository.findAllPatientsMedicalRecordsByDoctorNationalId(doctorNationalId);
     }
-    @Override
-    public ResponseEntity<MedicalRecords> createMedicalRecord(PatientTreatmentRequest request) {
-        // Retrieve doctor, patient, and hospital details from the database
-        DoctorDetails doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(request.getDoctorNationalId()).orElseThrow(() -> new RuntimeException("Doctor not found"));
-        PatientDetails patient = patientRepository.findByPatientNationalIdIgnoreCase(request.getPatientNationalId()).orElseThrow(() -> new RuntimeException("Patient not found"));
-        HospitalDetails hospital = hospitalRepository.findByHospitalAddressIgnoreCase(request.getHospitalAddress()).orElseThrow(() -> new RuntimeException("Hospital not found"));
 
-        // Create a new medical record and set doctor, patient, and hospital details
-        MedicalRecords medicalRecord = new MedicalRecords();
-        medicalRecord.setDoctor(doctor);
-        medicalRecord.setPatient(patient);
-        medicalRecord.setHospital(hospital);
-        medicalRecord.setPatientName(patient.getPatientName());
-        medicalRecord.setChronicDisease(patient.getChronicDisease());
-        medicalRecord.setDayAdmitted(request.getDayAdmitted());
-      //  medicalRecord.setPrescription(request.getPrescription());
-        medicalRecord.setReferral(request.getReferral());
-        medicalRecord.setTemperature(request.getTemperature());
-        medicalRecord.setBp(request.getBp());
-        medicalRecord.setWeight(request.getWeight());
-        medicalRecord.setDiagnosis(request.getDiagnosis());
+    @Override
+   // @Transactional
+    public ResponseEntity<MedicalRecords> createMedicalRecord(PatientTreatmentRequest request) {
+
+        System.out.println("kudzi");
+        // Retrieve doctor, patient, and hospital details from the database
+       DoctorDetails doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(request.getDoctorNationalId()).orElseThrow(() -> new RuntimeException("Doctor not found"));
+       PatientDetails patient = patientRepository.findByPatientNationalIdIgnoreCase(request.getPatientNationalId()).orElseThrow(() -> new RuntimeException("Patient not found"));
+        HospitalDetails hospital = hospitalRepository.findByHospitalAddressIgnoreCase(request.getHospitalAddress()).orElseThrow(() -> new RuntimeException("Hospital not found"));
+// create new medical record
+        MedicalRecords medicalRecords = MedicalRecords.builder()
+                .doctor(doctor)
+                .patient(patient)
+                .hospital(hospital)
+                .patientName(patient.getPatientName())
+                .chronicDisease(patient.getChronicDisease())
+                .dayAdmitted(request.getDayAdmitted())
+              //  .prescription(request.getPrescription())
+                .referral(request.getReferral())
+                .temperature(request.getTemperature())
+                .bp(request.getBp())
+                .weight(request.getWeight())
+                .diagnosis(request.getDiagnosis())
+                .build();
+        System.out.println("kudzi");
+      medicalRecords =  medicalRecordsRepository.save(medicalRecords);
+        System.out.println("wdioofe");
+           return ResponseEntity.ok(medicalRecords);
+
+    }
+//    @Override
+//    public ResponseEntity<MedicalRecords> createMedicalRecord(PatientTreatmentRequest request) {
+//        // Retrieve doctor, patient, and hospital details from the database
+//        DoctorDetails doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(request.getDoctorNationalId()).orElseThrow(() -> new RuntimeException("Doctor not found"));
+//        PatientDetails patient = patientRepository.findByPatientNationalIdIgnoreCase(request.getPatientNationalId()).orElseThrow(() -> new RuntimeException("Patient not found"));
+//        HospitalDetails hospital = hospitalRepository.findByHospitalAddressIgnoreCase(request.getHospitalAddress()).orElseThrow(() -> new RuntimeException("Hospital not found"));
+//
+//        // Create a new medical record and set doctor, patient, and hospital details
+//        MedicalRecords medicalRecord = new MedicalRecords();
+//        medicalRecord.setDoctor(doctor);
+//        medicalRecord.setPatient(patient);
+//        medicalRecord.setHospital(hospital);
+//        medicalRecord.setPatientName(patient.getPatientName());
+//        medicalRecord.setChronicDisease(patient.getChronicDisease());
+//        medicalRecord.setDayAdmitted(request.getDayAdmitted());
+//      //  medicalRecord.setPrescription(request.getPrescription());
+//        medicalRecord.setReferral(request.getReferral());
+//        medicalRecord.setTemperature(request.getTemperature());
+//        medicalRecord.setBp(request.getBp());
+//        medicalRecord.setWeight(request.getWeight());
+//        medicalRecord.setDiagnosis(request.getDiagnosis());
 
         //  .prescription(patientTreatmentRequest.getPrescription())
 //                .dayAdmitted(request.getDayAdmitted())
@@ -122,10 +154,10 @@ import java.util.Optional;
 //                .diagnosis(patientTreatmentRequest.getDiagnosis())
         // Set other fields from the request
 
-        // Save the medical record to the database
-       medicalRecordsRepository.save(medicalRecord);
-        return ResponseEntity.ok(medicalRecord);
-    }
+//        // Save the medical record to the database
+//        System.out.println(medicalRecord.toString());
+//        return ResponseEntity.ok(medicalRecordsRepository.save(medicalRecord));
+//    }
 
 //    @Override
 //    public ResponseEntity<MedicalRecords> createPatientMedicalRecord(PatientTreatmentRequest patientTreatmentRequest,String hospitalAddress, String doctorNationalId, String patientNationalId) {

@@ -2,6 +2,8 @@ package zw.co.danhiko.medichronicle.service.medichronicle.impl.PharmarcyImpl;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import zw.co.danhiko.medichronicle.dto.Pharmacy.PharmacyRegistration;
@@ -27,7 +29,9 @@ public class PharmacyServiceImpl implements PharmacyService {
                      .pharmacyAddress(pharmacy.getPharmacyAddress())
                      .pharmacyPhoneNumber(pharmacy.getPharmacyPhoneNumber())
                      .build();
+             pharmacyDetails = pharmacyRepository.save(pharmacyDetails);
             return ResponseEntity.ok(pharmacyDetails);
+
     }
 
     @Override
@@ -59,9 +63,11 @@ public class PharmacyServiceImpl implements PharmacyService {
 
         pharmacyRepository.deleteByPharmacyAddress(pharmacyAddress);
     }
+
     @Override
-    public List<PharmacyDetails> getAll() {
-        return pharmacyRepository.findAll();
+    public Page<PharmacyDetails> getAllPharmacies(Pageable pageable) {
+       return pharmacyRepository.findAll(pageable);
     }
+
 
 }

@@ -10,18 +10,12 @@ import zw.co.danhiko.medichronicle.models.medicalRecords.MedicalRecords;
 public interface MedicalRecordService {
 
    List<MedicalRecords> getPatientMedicalRecordByPatientNationalId(String patientNationalId);
-
-    List<MedicalRecords>getAllPatientsMedicalRecordsByDoctorNationalId(String doctorNationalId);
+   List<MedicalRecords>getAllPatientsMedicalRecordsByDoctorNationalId(String doctorNationalId);
       ResponseEntity<MedicalRecords> deletePatientMedicalRecordsByPatientNationalId(String patientNationalId);
 
-    //updatePatientMedicalRecordsByNationalId
     ResponseEntity<MedicalRecords> updatePatientMedicalRecordsByPatientNationalId(String patientNationalId, Patient patient);
    List<MedicalRecords> getPatientMedicalRecordsByDoctorNationalId(String patientNationalId);
-  //  ResponseEntity<MedicalRecords> createPatientMedicalRecord(PatientTreatmentRequest patientTreatmentRequest, String hospitalAddress, String doctorNationalId, String patientNationalId);
-
-   // MedicalRecords createMedicalRecord(MedicalRecordRequest request);
-
-    ResponseEntity<MedicalRecords>createMedicalRecord(PatientTreatmentRequest request);
+   ResponseEntity<MedicalRecords>createMedicalRecord(PatientTreatmentRequest request);
 
     List<MedicalRecords> getAllPatientsMedicalRecords();
 

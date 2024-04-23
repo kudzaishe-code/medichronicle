@@ -1,15 +1,17 @@
 package zw.co.danhiko.medichronicle.controllers.Pharmacy;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.Page;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zw.co.danhiko.medichronicle.dto.Pharmacy.PharmacyRegistration;
 import zw.co.danhiko.medichronicle.dto.Pharmacy.PharmacyUpdateRequest;
 import zw.co.danhiko.medichronicle.models.Pharmacy.PharmacyDetails;
+import zw.co.danhiko.medichronicle.models.patient.PatientDetails;
 import zw.co.danhiko.medichronicle.service.medichronicle.impl.PharmarcyImpl.PharmacyService;
 
-import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,8 +42,9 @@ public ResponseEntity<PharmacyDetails> getPharmacyDetailsByPharmacyAddress(@Path
     public void deletePharmacy(@PathVariable String pharmacyAddress) {
         pharmacyService.deletePharmacy(pharmacyAddress);
     }
-    @GetMapping
-    public List<PharmacyDetails> getAllPharmacies() {
-        return pharmacyService.getAll();
+    @GetMapping("/get-all-pharmacies")
+    public Page<PharmacyDetails> getAllPharmacies(@RequestParam (defaultValue = "0") Integer pageNumber,@RequestParam(defaultValue = "10") Integer pageSize){
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        return pharmacyService.getAllPharmacies(pageable);
     }
 }
