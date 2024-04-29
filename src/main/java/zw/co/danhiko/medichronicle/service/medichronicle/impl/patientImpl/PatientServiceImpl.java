@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import zw.co.danhiko.medichronicle.dto.patient.PatientUpdateRequest;
-import zw.co.danhiko.medichronicle.models.patient.PatientDetails;
+import zw.co.danhiko.medichronicle.models.patient.Patient;
 import zw.co.danhiko.medichronicle.repository.patient.PatientRepository;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.FileDoesNotExistException;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.RecordAlreadyExistException;
@@ -24,27 +24,27 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public Page<PatientDetails> getAllPatients(Pageable pageable) {
+    public Page<Patient> getAllPatients(Pageable pageable) {
         return patientRepository.findAll(pageable);
     }
 
     @Override
-    public ResponseEntity<PatientDetails> createPatient(PatientRegistration request) {
+    public ResponseEntity<Patient> createPatient(PatientRegistration request) {
         if (patientRepository.existsByPatientNationalIdIgnoreCase(request.getPatientNationalId()))
             throw new RecordAlreadyExistException("patient  with id already exist");
-        PatientDetails patientDetails = PatientDetails.builder()
+        Patient patient = Patient.builder()
                 .patientName(request.getPatientName())
                 .patientNationalId(request.getPatientNationalId())
                 .chronicDisease(request.getChronicDisease())
                 .build();
-        patientDetails = patientRepository.save(patientDetails);
+        patient = patientRepository.save(patient);
 
-        return ResponseEntity.ok(patientDetails);
+        return ResponseEntity.ok(patient);
     }
 
     @Override
-    public PatientDetails deletePatient(String patientNationalId) {
-        Optional<PatientDetails> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
+    public Patient deletePatient(String patientNationalId) {
+        Optional<Patient> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
         if (patient.isEmpty())
             throw new FileDoesNotExistException("patient does not exist");
 
@@ -53,14 +53,14 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public ResponseEntity<PatientDetails> updatePatientDetailsByPatientNationalIdIgnoreCase(String patientNationalId, PatientUpdateRequest request) {
+    public ResponseEntity<Patient> updatePatientDetailsByPatientNationalIdIgnoreCase(String patientNationalId, PatientUpdateRequest request) {
 
         //logic to  update patient details
         if (!patientRepository.existsByPatientNationalIdIgnoreCase(patientNationalId))
             throw new FileDoesNotExistException("patient does not exist");
-        PatientDetails patientDetails = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId).get();
-        patientDetails.setChronicDisease(request.getChronicDisease());
-        patientDetails = patientRepository.save(patientDetails);
-        return ResponseEntity.ok(patientDetails);
+        Patient patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId).get();
+        patient.setChronicDisease(request.getChronicDisease());
+        patient = patientRepository.save(patient);
+        return ResponseEntity.ok(patient);
     }
 }

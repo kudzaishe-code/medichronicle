@@ -2,14 +2,12 @@ package zw.co.danhiko.medichronicle.repository.doctor;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import zw.co.danhiko.medichronicle.dto.Prescription.PrescriptionDTO;
-import zw.co.danhiko.medichronicle.models.doctor.DoctorDetails;
+import zw.co.danhiko.medichronicle.models.doctor.Doctor;
 
-import java.util.List;
 import java.util.Optional;
 @Repository
-public interface DoctorRepository extends JpaRepository<DoctorDetails, Long> {
-        Optional<DoctorDetails> findByDoctorNationalIdIgnoreCase(String doctorNationalId);
+public interface DoctorRepository extends JpaRepository<Doctor, Long> {
+        Optional<Doctor> findByDoctorNationalIdIgnoreCase(String doctorNationalId);
 
 boolean existsByDoctorNationalIdIgnoreCase(String doctorNationalId);
 

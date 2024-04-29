@@ -2,30 +2,28 @@ package zw.co.danhiko.medichronicle.repository.HospitalDetails;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import zw.co.danhiko.medichronicle.dto.hospital.HospitalRequest;
-import zw.co.danhiko.medichronicle.models.hospital.HospitalDetails;
+import zw.co.danhiko.medichronicle.models.hospital.Hospital;
 
 import java.util.List;
 import java.util.Optional;
 @Repository
-public interface HospitalRepository extends JpaRepository<HospitalDetails, Long> {
+public interface HospitalRepository extends JpaRepository<Hospital, Long> {
 
-    Optional<HospitalDetails> findById(Long id);
+    Optional<Hospital> findById(Long id);
 
  void deleteHospitalById( Long id);
- List<HospitalDetails> findHospitalDetailsByHospitalName(String hospitalName);
+ List<Hospital> findHospitalDetailsByHospitalName(String hospitalName);
  boolean existsByHospitalAddress(String hospitalAddress);
 
-   Optional<HospitalDetails> findByHospitalAddressIgnoreCase(String hospitalAddress);
+   Optional<Hospital> findByHospitalAddressIgnoreCase(String hospitalAddress);
 
-    Optional<HospitalDetails> findByHospitalAddress(String hospitalAddress);
+    Optional<Hospital> findByHospitalAddress(String hospitalAddress);
 
 
     boolean existsByHospitalNameIgnoreCase(String hospitalName);
 
-    List<HospitalDetails> findByHospitalNameIgnoreCase(String hospitalName);
+    List<Hospital> findByHospitalNameIgnoreCase(String hospitalName);
 
     void deleteByHospitalAddress(String hospitalAddress);
 }

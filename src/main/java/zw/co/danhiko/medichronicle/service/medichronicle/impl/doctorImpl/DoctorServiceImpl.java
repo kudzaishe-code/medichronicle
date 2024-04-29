@@ -6,13 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import zw.co.danhiko.medichronicle.dto.doctor.Doctor;
-import zw.co.danhiko.medichronicle.models.doctor.DoctorDetails;
+import zw.co.danhiko.medichronicle.dto.doctor.DoctorAddress;
+import zw.co.danhiko.medichronicle.models.doctor.Doctor;
 import zw.co.danhiko.medichronicle.repository.doctor.DoctorRepository;
-import zw.co.danhiko.medichronicle.repository.patient.PatientRepository;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.FileDoesNotExistException;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.RecordAlreadyExistException;
-import java.util.List;
+
 import java.util.Optional;
 
 @Data
@@ -22,45 +21,45 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
 
     @Override
-    public Page<DoctorDetails> getAllDoctors(Pageable pageable) {
+    public Page<Doctor> getAllDoctors(Pageable pageable) {
 
         return doctorRepository.findAll(pageable);
     }
     @Override
-    public ResponseEntity<DoctorDetails> getDoctorDetailsByDoctorNationalIdIgnoreCase(String doctorNationalId) {
+    public ResponseEntity<Doctor> getDoctorDetailsByDoctorNationalIdIgnoreCase(String doctorNationalId) {
 
-        Optional<DoctorDetails> doctorDetails= doctorRepository.findByDoctorNationalIdIgnoreCase( doctorNationalId);
+        Optional<Doctor> doctorDetails= doctorRepository.findByDoctorNationalIdIgnoreCase( doctorNationalId);
         if (doctorDetails.isEmpty())
             throw new FileDoesNotExistException("doctor does not exist");
         return ResponseEntity.ok(doctorDetails.get());
         }
 
 @Override
-    public ResponseEntity<DoctorDetails> addDoctor(DoctorRegistration request) {
+    public ResponseEntity<Doctor> addDoctor(DoctorRegistration request) {
         if (doctorRepository.existsByDoctorNationalIdIgnoreCase(request.getDoctorNationalId()))
             throw new RecordAlreadyExistException("doctor with id already exist");
 
 
-        DoctorDetails doctorDetails = new DoctorDetails();
-        doctorDetails.setDoctorNationalId(request.getDoctorNationalId());
-        doctorDetails.setDoctorName(request.getDoctorName());
-        doctorDetails.setDoctorPhoneNumber(request.getDoctorPhoneNumber());
-        doctorDetails.setLocation(request.getLocation());
-        DoctorDetails savedDoctor = doctorRepository.save(doctorDetails);
+        Doctor doctor = new Doctor();
+        doctor.setDoctorNationalId(request.getDoctorNationalId());
+        doctor.setDoctorName(request.getDoctorName());
+        doctor.setDoctorPhoneNumber(request.getDoctorPhoneNumber());
+        doctor.setLocation(request.getLocation());
+        Doctor savedDoctor = doctorRepository.save(doctor);
         return ResponseEntity.ok(savedDoctor);
     }
 
     @Override
-    public ResponseEntity<DoctorDetails> updateDoctorDetailsByDoctorNationalIdIgnoreCase(String doctorNationalId, Doctor doctor) {
+    public ResponseEntity<Doctor> updateDoctorDetailsByDoctorNationalIdIgnoreCase(String doctorNationalId, DoctorAddress doctor) {
 
      //logic to  update doctor details
         if(doctorRepository.existsByDoctorNationalIdIgnoreCase(doctorNationalId));
-        DoctorDetails doctorDetails = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId).get();
+        Doctor doctorDetails = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId).get();
         doctorDetails.setLocation(doctorDetails.getLocation());
         doctorDetails = doctorRepository.save(doctorDetails);
         return ResponseEntity.ok(doctorDetails);
 //       if (doctorRepository.existsByDoctorNationalIdIgnoreCase(doctorNationalId));
-//       DoctorDetails doctorDetails = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId).get();
+//       DoctorAddress doctorDetails = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId).get();
 //       doctorDetails.setHospitalName(doctor.getHospitalName());
 //       doctorDetails = doctorRepository.save(doctorDetails);
 //       return ResponseEntity.ok(doctorDetails);
@@ -69,9 +68,9 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public DoctorDetails deleteDoctor(String DoctorNationalId) {
+    public Doctor deleteDoctor(String DoctorNationalId) {
 
-        Optional<DoctorDetails> doctor= doctorRepository.findByDoctorNationalIdIgnoreCase(DoctorNationalId);
+        Optional<Doctor> doctor= doctorRepository.findByDoctorNationalIdIgnoreCase(DoctorNationalId);
         if(doctor.isEmpty())
             throw new FileDoesNotExistException("doctor does not exist");
 

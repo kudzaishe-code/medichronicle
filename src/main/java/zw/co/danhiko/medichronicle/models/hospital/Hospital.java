@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import zw.co.danhiko.medichronicle.models.doctor.DoctorDetails;
+import zw.co.danhiko.medichronicle.models.doctor.Doctor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +15,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @Entity(name = "hospital")
-public class HospitalDetails {
+public class Hospital {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +25,6 @@ public class HospitalDetails {
     private String hospitalAddress;
     private String hospitalContact;
 
-    @OneToMany(mappedBy = "hospitalDetails", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<DoctorDetails> doctors = new HashSet<>();
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Doctor> doctors = new HashSet<>();
 }

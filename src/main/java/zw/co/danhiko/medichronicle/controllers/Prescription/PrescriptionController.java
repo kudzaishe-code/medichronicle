@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zw.co.danhiko.medichronicle.dto.Prescription.PrescriptionDTO;
-import zw.co.danhiko.medichronicle.models.PrescriptionDetails.PrescriptionDetails;
+import zw.co.danhiko.medichronicle.models.PrescriptionDetails.Prescription;
 import zw.co.danhiko.medichronicle.service.medichronicle.impl.prescriptionImpl.PrescriptionService;
 
 import java.time.LocalDate;
@@ -18,15 +18,15 @@ import java.util.List;
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     @PostMapping("/create-prescription-by-patient-national-id-and-doctor-national-id/create")
-    public ResponseEntity<List<PrescriptionDetails>> createPrescription(@RequestParam String patientNationalId, @RequestParam String doctorNationalId, LocalDate medicalRecordCreationDate) {
-        List<PrescriptionDetails> createdPrescriptions = prescriptionService.createPrescription(patientNationalId,  doctorNationalId,medicalRecordCreationDate);
+    public ResponseEntity<List<Prescription>> createPrescription(@RequestParam String patientNationalId, @RequestParam String doctorNationalId, LocalDate medicalRecordCreationDate) {
+        List<Prescription> createdPrescriptions = prescriptionService.createPrescription(patientNationalId,  doctorNationalId,medicalRecordCreationDate);
         return new ResponseEntity<>(createdPrescriptions, HttpStatus.CREATED);
     }
 
 
     @GetMapping("get-prescription-by-patient-national-id/{patientNationalId}")
-    public ResponseEntity<PrescriptionDetails> getPrescriptionById(@PathVariable String patientNationalId) {
-        PrescriptionDetails prescription = prescriptionService.getPrescriptionById(patientNationalId);
+    public ResponseEntity<Prescription> getPrescriptionById(@PathVariable String patientNationalId) {
+        Prescription prescription = prescriptionService.getPrescriptionById(patientNationalId);
         return new ResponseEntity<>(prescription, HttpStatus.OK);
     }
 
@@ -37,7 +37,7 @@ public class PrescriptionController {
     }
 
     @PutMapping("update-prescription-by-patient-national-id/{id}")
-    public ResponseEntity<PrescriptionDetails> updatePrescriptionByPatientNationalId(@PathVariable String patientNationalId, @RequestBody PrescriptionDTO prescriptionDTO) {
+    public ResponseEntity<Prescription> updatePrescriptionByPatientNationalId(@PathVariable String patientNationalId, @RequestBody PrescriptionDTO prescriptionDTO) {
         return ResponseEntity.ok(prescriptionService.updatePrescriptionByPatientNationalId(patientNationalId, prescriptionDTO));
     }
     @GetMapping("/{prescriptionId}/medication-provided")
@@ -46,7 +46,7 @@ public class PrescriptionController {
     }
 // getPrescriptionsForPatient
     @GetMapping("/get-prescriptions-for-patient/{patientNationalId}")
-    public List<PrescriptionDetails> getPrescriptionsForPatient(@PathVariable String patientNationalId) {
+    public List<Prescription> getPrescriptionsForPatient(@PathVariable String patientNationalId) {
         return prescriptionService.getPrescriptionsForPatient(patientNationalId);
     }
     @GetMapping("/is-medication-provided/{patientNationalId}")

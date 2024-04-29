@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zw.co.danhiko.medichronicle.dto.Prescription.PrescriptionDTO;
-import zw.co.danhiko.medichronicle.models.Pharmacy.PharmacyDetails;
-import zw.co.danhiko.medichronicle.models.PrescriptionDetails.PrescriptionDetails;
-import zw.co.danhiko.medichronicle.models.doctor.DoctorDetails;
+import zw.co.danhiko.medichronicle.models.Pharmacy.Pharmacy;
+import zw.co.danhiko.medichronicle.models.PrescriptionDetails.Prescription;
+import zw.co.danhiko.medichronicle.models.doctor.Doctor;
 import zw.co.danhiko.medichronicle.models.medicalRecords.MedicalRecords;
-import zw.co.danhiko.medichronicle.models.patient.PatientDetails;
+import zw.co.danhiko.medichronicle.models.patient.Patient;
 import zw.co.danhiko.medichronicle.repository.MedicalRecords.MedicalRecordsRepository;
 import zw.co.danhiko.medichronicle.repository.Pharmacy.PharmacyRepository;
 import zw.co.danhiko.medichronicle.repository.Prescription.PrescriptionRepository;
@@ -32,24 +32,24 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     private MedicalRecordsRepository medicalRecordRepository;
 
     @Override
-    public List<PrescriptionDetails> createPrescription(String patientNationalId, String doctorNationalId, LocalDate medicalRecordCreationDate) {
+    public List<Prescription> createPrescription(String patientNationalId, String doctorNationalId, LocalDate medicalRecordCreationDate) {
         // Check if the patient exists
-        PatientDetails patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId)
+        Patient patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId)
                 .orElseThrow(() -> new RuntimeException("Patient not found with national ID: " + patientNationalId));
         // Check if the doctor exists
-        DoctorDetails doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId)
-                .orElseThrow(() -> new RuntimeException("Doctor not found with national ID: " + doctorNationalId));
+        Doctor doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId)
+                .orElseThrow(() -> new RuntimeException("DoctorAddress not found with national ID: " + doctorNationalId));
         // Check if the medical record exists
         MedicalRecords medicalRecord = medicalRecordRepository.findByPatientNationalIdIgnoreCaseAndDayAdmitted(patientNationalId, medicalRecordCreationDate)
                 .orElseThrow(() -> new RuntimeException("Medical record not found with national ID: " + patientNationalId + " and creation date: " + medicalRecordCreationDate));
 
-        // Assuming the MedicalRecords entity has a method to directly get the PrescriptionDetails or create a new one if it does not exist
-        PrescriptionDetails newPrescription = medicalRecord.getPrescription();
+        // Assuming the MedicalRecords entity has a method to directly get the Prescription or create a new one if it does not exist
+        Prescription newPrescription = medicalRecord.getPrescription();
         if (newPrescription == null) {
-            newPrescription = new PrescriptionDetails();
-            newPrescription.setPatient(patient);
-            newPrescription.setDoctor(doctor);
-            // Assuming the PrescriptionDetails entity has methods to set properties such as medication requests and whether medication was provided
+            newPrescription = new Prescription();
+           // newPrescription.setPatient(patient);
+           // newPrescription.setDoctor(doctor);
+            // Assuming the Prescription entity has methods to set properties such as medication requests and whether medication was provided
             // Set other necessary prescription details here
             newPrescription.setMedicationProvided(false); // Initially, no medication is provided
             medicalRecord.setPrescription(newPrescription); // Link the new prescription to the medical record
@@ -63,7 +63,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
-    public PrescriptionDetails getPrescriptionById(String patientNationalId) {
+    public Prescription getPrescriptionById(String patientNationalId) {
         return null;
     }
 
@@ -80,7 +80,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
-    public PrescriptionDetails updatePrescriptionByPatientNationalId(String patientNationalId, PrescriptionDTO prescriptionDTO) {
+    public Prescription updatePrescriptionByPatientNationalId(String patientNationalId, PrescriptionDTO prescriptionDTO) {
         return null;
     }
 
@@ -90,25 +90,25 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
-    public PrescriptionDetails updatePrescriptionById(String patientNationalId, PrescriptionDTO prescriptionDTO) {
+    public Prescription updatePrescriptionById(String patientNationalId, PrescriptionDTO prescriptionDTO) {
         // Retrieve the existing prescription by ID
-        PrescriptionDetails existingPrescription = prescriptionRepository.findById(patientNationalId)
+        Prescription existingPrescription = prescriptionRepository.findById(patientNationalId)
                 .orElseThrow(() -> new RuntimeException("Prescription not found with id: " +patientNationalId));
 
         // Update fields of the existing prescription
       //  existingPrescription.setPrescription(prescriptionDTO.getPrescription());
 
         // Retrieve and validate patient, doctor, and pharmacy
-        PatientDetails patient = patientRepository.findByPatientNationalIdIgnoreCase(String.valueOf(prescriptionDTO))
+        Patient patient = patientRepository.findByPatientNationalIdIgnoreCase(String.valueOf(prescriptionDTO))
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
-        DoctorDetails doctor = (DoctorDetails) doctorRepository.findByDoctorNationalIdIgnoreCase(String.valueOf(prescriptionDTO))
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
-        PharmacyDetails pharmacy = (PharmacyDetails) pharmacyRepository.findById(Long.valueOf(String.valueOf(prescriptionDTO)))
+        Doctor doctor = (Doctor) doctorRepository.findByDoctorNationalIdIgnoreCase(String.valueOf(prescriptionDTO))
+                .orElseThrow(() -> new RuntimeException("DoctorAddress not found"));
+        Pharmacy pharmacy = (Pharmacy) pharmacyRepository.findById(Long.valueOf(String.valueOf(prescriptionDTO)))
                 .orElseThrow(() -> new RuntimeException("Pharmacy not found"));
 
         // Update patient, doctor, and pharmacy associations
-        existingPrescription.setPatient(patient);
-        existingPrescription.setDoctor(doctor);
+       // existingPrescription.setPatient(patient);
+       // existingPrescription.setDoctor(doctor);
         existingPrescription.setPharmacy(pharmacy);
 
         // Save the updated prescription
@@ -121,7 +121,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
-    public List<PrescriptionDetails> getPrescriptionsForPatient(String patientNationalId) {
+    public List<Prescription> getPrescriptionsForPatient(String patientNationalId) {
         return null;
     }
 

@@ -2,8 +2,8 @@ package zw.co.danhiko.medichronicle.models.doctor;
 
 import jakarta.persistence.*;
 import lombok.*;
-import zw.co.danhiko.medichronicle.models.hospital.HospitalDetails;
-import zw.co.danhiko.medichronicle.models.patient.PatientDetails;
+import zw.co.danhiko.medichronicle.models.hospital.Hospital;
+import zw.co.danhiko.medichronicle.models.patient.Patient;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @Entity(name = "doctors")
-public class DoctorDetails {
+public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,17 +26,16 @@ public class DoctorDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id") // Specify the foreign key column
-    private HospitalDetails hospitalDetails; // Corrected property name
+    private Hospital hospital; // Corrected property name
 
     @Getter
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "doctor_patient",
             joinColumns = @JoinColumn(name = "doctor_National_id"),
             inverseJoinColumns = @JoinColumn(name = "patient_National_id"))
-    private Set<PatientDetails> patientsDetails = new HashSet<>();
-    public void addPatientDetails(PatientDetails patientDetails) {
-        patientsDetails.add(patientDetails);
-        patientDetails.getDoctor().add(this);
+    private Set<Patient> patients = new HashSet<>();
+    public void addPatient(Patient patient) {
+        patients.add(patient);
+        patient.getDoctor().add(this);
     }
-    // Other methods...
 }

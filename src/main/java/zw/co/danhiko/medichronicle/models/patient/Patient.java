@@ -2,8 +2,7 @@ package zw.co.danhiko.medichronicle.models.patient;
 
 import jakarta.persistence.*;
 import lombok.*;
-import zw.co.danhiko.medichronicle.models.doctor.DoctorDetails;
-import zw.co.danhiko.medichronicle.models.medicalRecords.MedicalRecords;
+import zw.co.danhiko.medichronicle.models.doctor.Doctor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +12,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @Entity(name = "patients")
-public class PatientDetails {
+public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,12 +21,13 @@ public class PatientDetails {
     private String patientNationalId;
     private String chronicDisease;
     private String patientName;
+    private String nationalId;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "patient_doctor",
             joinColumns = @JoinColumn(name = "patient_id"),
             inverseJoinColumns = @JoinColumn(name = "doctor_id"))
-    private Set<DoctorDetails> doctor = new HashSet<>();
+    private Set<Doctor> doctor = new HashSet<>();
 
     // Other fields and methods...
 

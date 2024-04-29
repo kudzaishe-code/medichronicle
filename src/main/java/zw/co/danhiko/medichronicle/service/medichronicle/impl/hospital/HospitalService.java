@@ -6,17 +6,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import zw.co.danhiko.medichronicle.dto.hospital.HospitalRequest;
 import zw.co.danhiko.medichronicle.dto.hospital.HospitalUpdateRequest;
-import zw.co.danhiko.medichronicle.models.hospital.HospitalDetails;
+import zw.co.danhiko.medichronicle.models.hospital.Hospital;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public interface HospitalService {
-    Page<HospitalDetails> getAllHospitalsByName(Pageable pageable);
-    Optional<HospitalDetails> findHospitalDetailsByAddress(String hospitalAddress);
-    ResponseEntity<HospitalDetails> createHospital(HospitalRequest hospitalRequest);
-    ResponseEntity<HospitalDetails> deleteHospital(String hospitalAddress);
-    List<HospitalDetails> findHospitalByNameIgnoreCase(String hospitalName);
-    ResponseEntity<HospitalDetails> hospitalUpdate(HospitalUpdateRequest hospitalUpdateRequest, String hospitalAddress);
+    Page<Hospital> getAllHospitalsByName(Pageable pageable);
+    Optional<Hospital> findHospitalDetailsByAddress(String hospitalAddress);
+    ResponseEntity<Hospital> createHospital(HospitalRequest hospitalRequest);
+    ResponseEntity<Hospital> deleteHospital(String hospitalAddress);
+    List<Hospital> findHospitalByNameIgnoreCase(String hospitalName);
+    ResponseEntity<Hospital> hospitalUpdate(HospitalUpdateRequest hospitalUpdateRequest, String hospitalAddress);
 }

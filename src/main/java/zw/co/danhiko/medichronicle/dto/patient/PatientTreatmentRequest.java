@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import zw.co.danhiko.medichronicle.dto.Prescription.PrescriptionDTO;
-import zw.co.danhiko.medichronicle.models.PrescriptionDetails.PrescriptionDetails;
+import zw.co.danhiko.medichronicle.models.PrescriptionDetails.Prescription;
 
 
 import java.math.BigDecimal;
@@ -19,14 +18,13 @@ public class PatientTreatmentRequest {
     private BigDecimal pulse;
     private String hospitalAddress;
     private String doctorNationalId;
-    private PrescriptionDTO prescription;
+  //  private Prescription prescription;
     private Date dayAdmitted;
     private String referral;
     private BigDecimal temperature;
     private BigDecimal bp;
     private BigDecimal weight;
     private String diagnosis;
-
 
 
 }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import zw.co.danhiko.medichronicle.models.PrescriptionDetails.PrescriptionDetails;
+import zw.co.danhiko.medichronicle.models.PrescriptionDetails.Prescription;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,7 +17,7 @@ public class Patient {
         private String patientName;
         private String patientNationalId;
         private String chronicDisease;
-        private PrescriptionDetails prescription;
+        private Prescription prescription;
         private Date dayAdmitted;
         private Date dayDischarged;
         private String  referral;

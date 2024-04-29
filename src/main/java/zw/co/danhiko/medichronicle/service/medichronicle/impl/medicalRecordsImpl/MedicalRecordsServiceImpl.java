@@ -6,12 +6,11 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import zw.co.danhiko.medichronicle.dto.patient.Patient;
 import zw.co.danhiko.medichronicle.dto.patient.PatientTreatmentRequest;
-import zw.co.danhiko.medichronicle.models.doctor.DoctorDetails;
-import zw.co.danhiko.medichronicle.models.hospital.HospitalDetails;
+import zw.co.danhiko.medichronicle.models.doctor.Doctor;
+import zw.co.danhiko.medichronicle.models.hospital.Hospital;
 import zw.co.danhiko.medichronicle.models.medicalRecords.MedicalRecords;
-import zw.co.danhiko.medichronicle.models.patient.PatientDetails;
+import zw.co.danhiko.medichronicle.models.patient.Patient;
 import zw.co.danhiko.medichronicle.repository.HospitalDetails.HospitalRepository;
 import zw.co.danhiko.medichronicle.repository.MedicalRecords.MedicalRecordsRepository;
 import zw.co.danhiko.medichronicle.repository.doctor.DoctorRepository;
@@ -34,7 +33,7 @@ import java.util.Optional;
     @Override
     public List<MedicalRecords> getPatientMedicalRecordByPatientNationalId(String patientNationalId) {
 
-        Optional<PatientDetails> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
+        Optional<Patient> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
         if (patient.isEmpty())
             throw new FileDoesNotExistException("patient does not exist");
        List<MedicalRecords> medicalRecords = medicalRecordsRepository.findAllByPatientNationalIdIgnoreCase(patientNationalId);
@@ -42,12 +41,10 @@ import java.util.Optional;
     }
     @Override
     public List<MedicalRecords> getAllPatientsMedicalRecordsByDoctorNationalId(String doctorNationalId) {
-        // Check if the doctor exists
-        Optional<DoctorDetails> doctorOptional = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
+        Optional<Doctor> doctorOptional = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
         if (doctorOptional.isEmpty()) {
-            throw new DoctorNotFoundException("Doctor with national ID: " + doctorNationalId + " not found");
+            throw new DoctorNotFoundException("DoctorAddress with national ID: " + doctorNationalId + " not found");
         }
-
         return medicalRecordsRepository.findAllByDoctorNationalIdIgnoreCase(doctorNationalId);
     }
 
@@ -61,18 +58,17 @@ import java.util.Optional;
             medicalRecordsRepository.delete(medicalRecords.get());
             return ResponseEntity.ok(medicalRecords.get());
         }
-
     }
     @Override
-    public ResponseEntity<MedicalRecords> updatePatientMedicalRecordsByPatientNationalId(String patientNationalId, Patient patient) {
+    public ResponseEntity<MedicalRecords> updatePatientMedicalRecordsByPatientNationalId(String patientNationalId, zw.co.danhiko.medichronicle.dto.patient.Patient patient) {
 
         Optional<MedicalRecords> medicalRecords = medicalRecordsRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
         if (medicalRecords.isEmpty()) {
             throw new FileDoesNotExistException("patient does not exist");
         } else {
             MedicalRecords medicalRecords1 = medicalRecords.get();
-            medicalRecords1.setPatientName(patient.getPatientName());
-            medicalRecords1.setChronicDisease(patient.getChronicDisease());
+          //  medicalRecords1.setPatientName(patient.getPatientName());
+           // medicalRecords1.setChronicDisease(patient.getChronicDisease());
             medicalRecords1.setDayAdmitted(patient.getDayAdmitted());
             medicalRecords1.setPrescription(patient.getPrescription());
             medicalRecords1.setReferral(patient.getReferral());
@@ -94,21 +90,24 @@ import java.util.Optional;
     }
 
     @Override
-   // @Transactional
+    @Transactional
     public ResponseEntity<MedicalRecords> createMedicalRecord(PatientTreatmentRequest request) {
+        // Retrieve doctor, patient, and hospital entities from the database
+        Optional<Doctor> doctorOptional = doctorRepository.findByDoctorNationalIdIgnoreCase(request.getDoctorNationalId());
+        Optional<Patient> patientOptional = patientRepository.findByPatientNationalIdIgnoreCase(request.getPatientNationalId());
+        Optional<Hospital> hospitalOptional = hospitalRepository.findByHospitalAddressIgnoreCase(request.getHospitalAddress());
 
-        System.out.println("kudzi");
-        // Retrieve doctor, patient, and hospital details from the database
-       DoctorDetails doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(request.getDoctorNationalId()).orElseThrow(() -> new RuntimeException("Doctor not found"));
-       PatientDetails patient = patientRepository.findByPatientNationalIdIgnoreCase(request.getPatientNationalId()).orElseThrow(() -> new RuntimeException("Patient not found"));
-        HospitalDetails hospital = hospitalRepository.findByHospitalAddressIgnoreCase(request.getHospitalAddress()).orElseThrow(() -> new RuntimeException("Hospital not found"));
-// create new medical record
+        // Check if doctor, patient, and hospital entities exist
+        if (doctorOptional.isEmpty() || patientOptional.isEmpty() || hospitalOptional.isEmpty()) {
+            // Return appropriate error response if any of the entities is not found
+            return ResponseEntity.notFound().build();
+        }
+
+        // Create MedicalRecords object with associated entities
         MedicalRecords medicalRecords = MedicalRecords.builder()
-                .doctor(doctor)
-                .patient(patient)
-                .hospital(hospital)
-                .patientName(patient.getPatientName())
-                .chronicDisease(patient.getChronicDisease())
+                .doctor(doctorOptional.get())
+                .patient(patientOptional.get())
+                .hospital(hospitalOptional.get())
                 .dayAdmitted(request.getDayAdmitted())
               //  .prescription(request.getPrescription())
                 .referral(request.getReferral())
@@ -117,18 +116,20 @@ import java.util.Optional;
                 .weight(request.getWeight())
                 .diagnosis(request.getDiagnosis())
                 .build();
-        System.out.println("kudzi");
-      medicalRecords =  medicalRecordsRepository.save(medicalRecords);
-        System.out.println("wdioofe");
-           return ResponseEntity.ok(medicalRecords);
 
+        // Save the MedicalRecords object to the database
+        medicalRecords = medicalRecordsRepository.save(medicalRecords);
+
+        // Return the saved MedicalRecords object in the response
+        return ResponseEntity.ok(medicalRecords);
     }
+
 //    @Override
 //    public ResponseEntity<MedicalRecords> createMedicalRecord(PatientTreatmentRequest request) {
 //        // Retrieve doctor, patient, and hospital details from the database
-//        DoctorDetails doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(request.getDoctorNationalId()).orElseThrow(() -> new RuntimeException("Doctor not found"));
-//        PatientDetails patient = patientRepository.findByPatientNationalIdIgnoreCase(request.getPatientNationalId()).orElseThrow(() -> new RuntimeException("Patient not found"));
-//        HospitalDetails hospital = hospitalRepository.findByHospitalAddressIgnoreCase(request.getHospitalAddress()).orElseThrow(() -> new RuntimeException("Hospital not found"));
+//        DoctorAddress doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(request.getDoctorNationalId()).orElseThrow(() -> new RuntimeException("DoctorAddress not found"));
+//        Patient patient = patientRepository.findByPatientNationalIdIgnoreCase(request.getPatientNationalId()).orElseThrow(() -> new RuntimeException("Patient not found"));
+//        Hospital hospital = hospitalRepository.findByHospitalAddressIgnoreCase(request.getHospitalAddress()).orElseThrow(() -> new RuntimeException("Hospital not found"));
 //
 //        // Create a new medical record and set doctor, patient, and hospital details
 //        MedicalRecords medicalRecord = new MedicalRecords();
@@ -162,17 +163,17 @@ import java.util.Optional;
 //    @Override
 //    public ResponseEntity<MedicalRecords> createPatientMedicalRecord(PatientTreatmentRequest patientTreatmentRequest,String hospitalAddress, String doctorNationalId, String patientNationalId) {
 //
-//        Optional<PatientDetails> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
+//        Optional<Patient> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
 //        if (patient.isEmpty()) {
 //            throw new FileDoesNotExistException("patient does not exist");
 //        }
-//        Optional<DoctorDetails> doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
+//        Optional<DoctorAddress> doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
 //        if (doctor.isEmpty()) {
 //
 //            throw new FileDoesNotExistException("doctor does not exist");
 //
 //        }
-//        Optional<HospitalDetails> hospital = hospitalRepository.findByHospitalAddressIgnoreCase(hospitalAddress);
+//        Optional<Hospital> hospital = hospitalRepository.findByHospitalAddressIgnoreCase(hospitalAddress);
 //        if (hospital.isEmpty()) {
 //            throw new FileDoesNotExistException("hospital does not exist");
 //        }

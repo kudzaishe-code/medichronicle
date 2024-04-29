@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-public class Doctor {
+public class DoctorAddress {
     private String location;
 }

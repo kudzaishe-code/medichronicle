@@ -5,10 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import zw.co.danhiko.medichronicle.models.PrescriptionDetails.PrescriptionDetails;
-import zw.co.danhiko.medichronicle.models.doctor.DoctorDetails;
-import zw.co.danhiko.medichronicle.models.hospital.HospitalDetails;
-import zw.co.danhiko.medichronicle.models.patient.PatientDetails;
+import zw.co.danhiko.medichronicle.models.PrescriptionDetails.Prescription;
+import zw.co.danhiko.medichronicle.models.doctor.Doctor;
+import zw.co.danhiko.medichronicle.models.hospital.Hospital;
+import zw.co.danhiko.medichronicle.models.patient.Patient;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -23,12 +23,13 @@ public class MedicalRecords {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String patientName;
-    @Column(unique = true)
-    private String patientNationalId;
-    private String chronicDisease;
-    @ManyToOne
-    private PrescriptionDetails prescription;
+  //  private String patientName;
+  //  @Column(unique = true)
+  //  private String patientNationalId;
+  //  private String chronicDisease;
+  //  @ManyToOne
+    @OneToOne(mappedBy =  "medicalRecords", cascade = CascadeType.ALL)
+    private Prescription prescription;
     private Date dayAdmitted;
     private String referral;
     private BigDecimal temperature;
@@ -42,11 +43,14 @@ public class MedicalRecords {
     private String doctorNationalId;
 
     @ManyToOne
-    private DoctorDetails doctor;
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
 
     @ManyToOne
-    private PatientDetails patient;
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 
     @ManyToOne
-    private HospitalDetails hospital;
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
 }

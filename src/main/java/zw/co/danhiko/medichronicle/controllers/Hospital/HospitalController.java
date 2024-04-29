@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zw.co.danhiko.medichronicle.dto.hospital.HospitalRequest;
-import zw.co.danhiko.medichronicle.models.hospital.HospitalDetails;
+import zw.co.danhiko.medichronicle.models.hospital.Hospital;
 import zw.co.danhiko.medichronicle.service.medichronicle.impl.hospital.HospitalService;
 
 import java.util.List;
@@ -23,32 +23,32 @@ public class HospitalController {
     @Autowired
     private  HospitalService hospitalService;
 @GetMapping("/get-hospital-details")
-    public Optional<HospitalDetails> findHospitalDetails(@PathVariable String hospitalAddress) {
+    public Optional<Hospital> findHospitalDetails(@PathVariable String hospitalAddress) {
         return hospitalService.findHospitalDetailsByAddress(hospitalAddress);
 
     }
     // find hospital by name
     @GetMapping("/find-hospital-by-name")
-    public List<HospitalDetails> findHospitalByName(@RequestParam String hospitalName) {
+    public List<Hospital> findHospitalByName(@RequestParam String hospitalName) {
         return hospitalService.findHospitalByNameIgnoreCase(hospitalName);
     }
     @GetMapping("/get-all-hospitals")
-    public Page<HospitalDetails> getAllHospitals(@RequestParam(defaultValue = "0") Integer pageNumber,
-                                                 @RequestParam(defaultValue = "10") Integer pageSize){
+    public Page<Hospital> getAllHospitals(@RequestParam(defaultValue = "0") Integer pageNumber,
+                                          @RequestParam(defaultValue = "10") Integer pageSize){
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         return  hospitalService.getAllHospitalsByName(pageable);
     }
     @PostMapping("/create-hospital")
-    public ResponseEntity<HospitalDetails> createHospital(HospitalRequest hospitalRequest) {
+    public ResponseEntity<Hospital> createHospital(HospitalRequest hospitalRequest) {
         return hospitalService.createHospital(hospitalRequest);
     }
 
 //    @PutMapping("/update-hospital")
-//    public ResponseEntity<HospitalDetails> updateHospital(@PathVariable Long Id, HospitalDetails hospitalDetails) {
-//        return hospitalService.updateHospital(hospitalDetails, Id);
+//    public ResponseEntity<Hospital> updateHospital(@PathVariable Long Id, Hospital hospital) {
+//        return hospitalService.updateHospital(hospital, Id);
 //    }
 @DeleteMapping("/delete-hospital")
-    public ResponseEntity<HospitalDetails> deleteHospital(String hospitalAddress) {
+    public ResponseEntity<Hospital> deleteHospital(String hospitalAddress) {
         return hospitalService.deleteHospital(hospitalAddress);
     }
 
