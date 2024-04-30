@@ -18,9 +18,9 @@ import java.util.List;
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;
     @PostMapping("/create-prescription-by-patient-national-id-and-doctor-national-id/create")
-    public ResponseEntity<List<Prescription>> createPrescription(@RequestParam String patientNationalId, @RequestParam String doctorNationalId, LocalDate medicalRecordCreationDate) {
-        List<Prescription> createdPrescriptions = prescriptionService.createPrescription(patientNationalId,  doctorNationalId,medicalRecordCreationDate);
-        return new ResponseEntity<>(createdPrescriptions, HttpStatus.CREATED);
+    public List<Prescription> createPrescription(@RequestParam String patientNationalId, @RequestParam String doctorNationalId, LocalDate medicalRecordCreationDate) {
+        List<String> createdPrescriptions = prescriptionService.createPrescription(patientNationalId,  doctorNationalId,medicalRecordCreationDate);
+        return prescriptionService.getPrescriptionsForPatient(patientNationalId);
     }
 
 

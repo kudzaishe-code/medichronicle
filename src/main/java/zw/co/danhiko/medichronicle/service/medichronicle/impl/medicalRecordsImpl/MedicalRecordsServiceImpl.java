@@ -15,7 +15,6 @@ import zw.co.danhiko.medichronicle.repository.HospitalDetails.HospitalRepository
 import zw.co.danhiko.medichronicle.repository.MedicalRecords.MedicalRecordsRepository;
 import zw.co.danhiko.medichronicle.repository.doctor.DoctorRepository;
 import zw.co.danhiko.medichronicle.repository.patient.PatientRepository;
-import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.DoctorNotFoundException;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.FileDoesNotExistException;
 
 import java.util.List;
@@ -37,16 +36,38 @@ import java.util.Optional;
         if (patient.isEmpty())
             throw new FileDoesNotExistException("patient does not exist");
        List<MedicalRecords> medicalRecords = medicalRecordsRepository.findAllByPatientNationalIdIgnoreCase(patientNationalId);
+       if (medicalRecords.isEmpty()) {
+           throw new FileDoesNotExistException("patient medical record does not exist");
+       }
         return ResponseEntity.ok(medicalRecords).getBody();
     }
+
+    // logic to get all patients medical records using doctor national id
+    @Override
+    public List<MedicalRecords> getPatientMedicalRecordByDoctorNationalId(String doctorNationalId) {
+
+        Optional<Doctor> doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
+        if (doctor.isEmpty())
+            throw new FileDoesNotExistException("doctor does not exist");
+        List<MedicalRecords> medicalRecords = medicalRecordsRepository.findAllByDoctorNationalIdIgnoreCase(doctorNationalId);
+        if (medicalRecords.isEmpty()) {
+            throw new FileDoesNotExistException("doctor medical record does not exist");
+        }
+        return ResponseEntity.ok(medicalRecords).getBody();
+    }
+
     @Override
     public List<MedicalRecords> getAllPatientsMedicalRecordsByDoctorNationalId(String doctorNationalId) {
-        Optional<Doctor> doctorOptional = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
-        if (doctorOptional.isEmpty()) {
-            throw new DoctorNotFoundException("DoctorAddress with national ID: " + doctorNationalId + " not found");
-        }
-        return medicalRecordsRepository.findAllByDoctorNationalIdIgnoreCase(doctorNationalId);
+        return null;
     }
+//    @Override
+//    public List<MedicalRecords> getAllPatientsMedicalRecordsByDoctorNationalId(String doctorNationalId) {
+//        Optional<Doctor> doctorOptional = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
+//        if (doctorOptional.isEmpty()) {
+//            throw new DoctorNotFoundException("DoctorAddress with national ID: " + doctorNationalId + " not found");
+//        }
+//        return medicalRecordsRepository.findAllByDoctorNationalIdIgnoreCase(doctorNationalId);
+//    }
 
 
     @Override
@@ -70,7 +91,7 @@ import java.util.Optional;
           //  medicalRecords1.setPatientName(patient.getPatientName());
            // medicalRecords1.setChronicDisease(patient.getChronicDisease());
             medicalRecords1.setDayAdmitted(patient.getDayAdmitted());
-            medicalRecords1.setPrescription(patient.getPrescription());
+            medicalRecords1.setPrescription(String.valueOf(patient.getPrescription()));
             medicalRecords1.setReferral(patient.getReferral());
             medicalRecords1.setTemperature(patient.getTemperature());
             medicalRecords1.setBp(patient.getBp());
@@ -79,14 +100,10 @@ import java.util.Optional;
             return ResponseEntity.ok(medicalRecords1);
         }
     }
+
     @Override
-    public List<MedicalRecords> getPatientMedicalRecordsByDoctorNationalId(String doctorNationalId) {
-
-        if (medicalRecordsRepository.findAllPatientsMedicalRecordsByDoctorNationalId(doctorNationalId).isEmpty()) {
-            throw new FileDoesNotExistException("No medical records found for doctor with national ID: " + doctorNationalId);
-        }
-
-        return medicalRecordsRepository.findAllPatientsMedicalRecordsByDoctorNationalId(doctorNationalId);
+    public List<MedicalRecords> getPatientMedicalRecordsByDoctorNationalId(String patientNationalId) {
+        return null;
     }
 
     @Override
@@ -109,7 +126,7 @@ import java.util.Optional;
                 .patient(patientOptional.get())
                 .hospital(hospitalOptional.get())
                 .dayAdmitted(request.getDayAdmitted())
-              //  .prescription(request.getPrescription())
+                .prescription(request.getPrescription())
                 .referral(request.getReferral())
                 .temperature(request.getTemperature())
                 .bp(request.getBp())

@@ -28,8 +28,9 @@ public class MedicalRecords {
   //  private String patientNationalId;
   //  private String chronicDisease;
   //  @ManyToOne
-    @OneToOne(mappedBy =  "medicalRecords", cascade = CascadeType.ALL)
-    private Prescription prescription;
+//    @OneToOne(mappedBy =  "medicalRecords", cascade = CascadeType.ALL)
+//    private Prescription prescription;
+    private String prescription;
     private Date dayAdmitted;
     private String referral;
     private BigDecimal temperature;

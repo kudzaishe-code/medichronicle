@@ -18,7 +18,7 @@ public class PatientTreatmentRequest {
     private BigDecimal pulse;
     private String hospitalAddress;
     private String doctorNationalId;
-  //  private Prescription prescription;
+    private String prescription;
     private Date dayAdmitted;
     private String referral;
     private BigDecimal temperature;

@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface PrescriptionRepository {
 
-    Prescription save(Prescription prescription);
+    Prescription save(String prescription);
 
     Optional<Prescription> findById(String patientNationalId);
 

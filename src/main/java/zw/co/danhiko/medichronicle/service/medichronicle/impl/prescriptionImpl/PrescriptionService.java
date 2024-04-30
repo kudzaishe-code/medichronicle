@@ -10,7 +10,7 @@ public interface PrescriptionService {
 
 
 
-    List<Prescription> createPrescription(String patientNationalId, String doctorNationalId, LocalDate medicalRecordCreationDate);
+    List<String> createPrescription(String patientNationalId, String doctorNationalId, LocalDate medicalRecordCreationDate);
 
     Prescription getPrescriptionById(String patientNationalId);
 

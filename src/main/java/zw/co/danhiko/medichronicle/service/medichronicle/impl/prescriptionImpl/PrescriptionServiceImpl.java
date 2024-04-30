@@ -18,6 +18,7 @@ import zw.co.danhiko.medichronicle.repository.patient.PatientRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @RequiredArgsConstructor
@@ -32,34 +33,28 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     private MedicalRecordsRepository medicalRecordRepository;
 
     @Override
-    public List<Prescription> createPrescription(String patientNationalId, String doctorNationalId, LocalDate medicalRecordCreationDate) {
-        // Check if the patient exists
-        Patient patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId)
-                .orElseThrow(() -> new RuntimeException("Patient not found with national ID: " + patientNationalId));
-        // Check if the doctor exists
-        Doctor doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId)
-                .orElseThrow(() -> new RuntimeException("DoctorAddress not found with national ID: " + doctorNationalId));
-        // Check if the medical record exists
-        MedicalRecords medicalRecord = medicalRecordRepository.findByPatientNationalIdIgnoreCaseAndDayAdmitted(patientNationalId, medicalRecordCreationDate)
-                .orElseThrow(() -> new RuntimeException("Medical record not found with national ID: " + patientNationalId + " and creation date: " + medicalRecordCreationDate));
-
-        // Assuming the MedicalRecords entity has a method to directly get the Prescription or create a new one if it does not exist
-        Prescription newPrescription = medicalRecord.getPrescription();
-        if (newPrescription == null) {
-            newPrescription = new Prescription();
-           // newPrescription.setPatient(patient);
-           // newPrescription.setDoctor(doctor);
-            // Assuming the Prescription entity has methods to set properties such as medication requests and whether medication was provided
-            // Set other necessary prescription details here
-            newPrescription.setMedicationProvided(false); // Initially, no medication is provided
-            medicalRecord.setPrescription(newPrescription); // Link the new prescription to the medical record
+    public List<String> createPrescription(String patientNationalId, String doctorNationalId, LocalDate medicalRecordCreationDate) {
+    // check if the patient exists based on the provided national ID
+        Optional<Patient> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
+        if (patient.isEmpty()) {
+            throw new RuntimeException("Patient not found with id: " + patientNationalId);
         }
-
-        // Save the new prescription. If it's newly created or updated, it needs to be persisted.
-        prescriptionRepository.save(newPrescription);
-
-        // Return the created or updated prescription in a list as per your method signature
-        return List.of(newPrescription);
+        // check if the doctor exists based on the provided national ID
+        Optional<Doctor> doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
+        if (doctor.isEmpty()) {
+            throw new RuntimeException("Doctor not found with id: " + doctorNationalId);
+        }
+        // check if the medical record exists based on the provided national ID
+        Optional<MedicalRecords> medicalRecord = medicalRecordRepository.findByPatientNationalIdIgnoreCaseAndDayAdmitted(patientNationalId, medicalRecordCreationDate);
+        if (medicalRecord.isEmpty()) {
+            throw new RuntimeException("Medical record not found with id: " + patientNationalId);
+        }
+        // create a new prescription
+        Prescription prescription = Prescription.builder()
+                .prescription(medicalRecord.get().getPrescription())
+                .build();
+        prescriptionRepository.save(String.valueOf(prescription));
+        return List.of(String.valueOf(prescription));
     }
 
     @Override
@@ -112,7 +107,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         existingPrescription.setPharmacy(pharmacy);
 
         // Save the updated prescription
-        return prescriptionRepository.save(existingPrescription);
+        return prescriptionRepository.save(String.valueOf(existingPrescription));
     }
 
     @Override
