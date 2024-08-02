@@ -27,7 +27,6 @@ public class DoctorServiceImpl implements DoctorService {
     }
     @Override
     public ResponseEntity<Doctor> getDoctorDetailsByDoctorNationalIdIgnoreCase(String doctorNationalId) {
-
         Optional<Doctor> doctorDetails= doctorRepository.findByDoctorNationalIdIgnoreCase( doctorNationalId);
         if (doctorDetails.isEmpty())
             throw new FileDoesNotExistException("doctor does not exist");

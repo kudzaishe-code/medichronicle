@@ -11,13 +11,10 @@ import java.util.Optional;
 @Repository
 public interface MedicalRecordsRepository extends JpaRepository<MedicalRecords,Long> {
 
-  Optional<MedicalRecords> findByPatientNationalIdIgnoreCase(String patientNationalId);
-   // boolean existsByPatientNationalIdIgnoreCase(String patientNationalId);
-    List<MedicalRecords> findAllPatientsMedicalRecordsByDoctorNationalId(String doctorNationalId);
-    List<MedicalRecords> findAllByDoctorNationalIdIgnoreCase(String doctorNationalId);
-    List<MedicalRecords> findAllByPatientNationalIdIgnoreCase(String patientNationalId);
+  List<MedicalRecords> findByPatientNationalIdIgnoreCase(String patientNationalId);
+   Optional<MedicalRecords> findAllByPatientNationalIdIgnoreCase(String patientNationalId);
 
-  Optional<MedicalRecords> findByPatientNationalIdIgnoreCaseAndDayAdmitted(String patientNationalId, LocalDate medicalRecordCreationDate);
+
 }
 
 

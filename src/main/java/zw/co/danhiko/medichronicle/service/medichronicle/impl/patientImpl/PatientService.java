@@ -12,5 +12,7 @@ public interface PatientService {
     ResponseEntity<Patient> createPatient(PatientRegistration request);
     Patient deletePatient(String patientNationalId);
     ResponseEntity<Patient> updatePatientDetailsByPatientNationalIdIgnoreCase(String patientNationalId, PatientUpdateRequest request);
+ ResponseEntity<Patient> getPatientDetailsByPatientNationalIdIgnoreCase(String patientNationalId);
+
 }
 

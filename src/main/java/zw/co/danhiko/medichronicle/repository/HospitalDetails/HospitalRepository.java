@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface HospitalRepository extends JpaRepository<Hospital, Long> {
 
-    Optional<Hospital> findById(Long id);
+   // Optional<Hospital> findById(Long id);
 
  void deleteHospitalById( Long id);
  List<Hospital> findHospitalDetailsByHospitalName(String hospitalName);

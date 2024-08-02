@@ -63,4 +63,13 @@ public class PatientServiceImpl implements PatientService {
         patient = patientRepository.save(patient);
         return ResponseEntity.ok(patient);
     }
+
+    @Override
+    public ResponseEntity<Patient> getPatientDetailsByPatientNationalIdIgnoreCase(String patientNationalId) {
+
+        Optional<Patient> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
+        if (patient.isEmpty())
+            throw new FileDoesNotExistException("patient does not exist");
+        return ResponseEntity.ok(patient.get());
+    }
 }

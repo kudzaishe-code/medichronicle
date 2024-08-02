@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import zw.co.danhiko.medichronicle.dto.Pharmacy.PharmacyRegistration;
 import zw.co.danhiko.medichronicle.dto.Pharmacy.PharmacyUpdateRequest;
 import zw.co.danhiko.medichronicle.models.Pharmacy.Pharmacy;
+import zw.co.danhiko.medichronicle.models.patient.Patient;
 import zw.co.danhiko.medichronicle.repository.Pharmacy.PharmacyRepository;
+import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.FileDoesNotExistException;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,12 +38,14 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     @Override
     public ResponseEntity<Pharmacy> getPharmacyDetailsByPharmacyAddress(String pharmacyAddress) {
-        if(!pharmacyRepository.existsByPharmacyAddress(pharmacyAddress))
-            throw  new RuntimeException("pharmacy does not exist");
-       return ResponseEntity.ok(pharmacyRepository.getPharmacyDetailsByPharmacyAddress(pharmacyAddress).getBody());
-
-
+        Optional<Pharmacy> pharmacyDetails = pharmacyRepository.findByPharmacyAddress(pharmacyAddress);
+        if (pharmacyDetails.isEmpty())
+            throw new RuntimeException("pharmacy does not exist");
+        return ResponseEntity.ok(pharmacyDetails.get());
     }
+
+
+
     @Override
     public List<Pharmacy> updatePharmacy(String pharmacyAddress, PharmacyUpdateRequest pharmacyUpdateRequest) {
         // Check if the pharmacy exists

@@ -64,22 +64,6 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
 
-
-
-//    @Override
-//    public ResponseEntity<Hospital> updateHospital(Hospital request, Long id) {
-//        if (!hospitalRepository.existsById(id)) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//        // Assuming hospitalRepository.build() returns the updated hospital
-//        Hospital hospital = Hospital.builder()
-//                .hospitalName(request.getHospitalName())
-//                .hospitalAddress(request.getHospitalAddress())
-//                .build();
-//        hospital = hospitalRepository.save(hospital);
-//        return new ResponseEntity<>(hospital, HttpStatus.OK);
-//    }
-
     @Override
     public ResponseEntity<Hospital> deleteHospital(String hospitalAddress) {
    //delete hospital

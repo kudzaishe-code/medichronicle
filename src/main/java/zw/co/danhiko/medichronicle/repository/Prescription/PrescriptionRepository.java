@@ -12,7 +12,7 @@ public interface PrescriptionRepository {
 
     Prescription save(String prescription);
 
-    Optional<Prescription> findById(String patientNationalId);
+    Optional<Prescription>findById(Long id);
 
 
 
@@ -21,7 +21,10 @@ public interface PrescriptionRepository {
     void deleteById(String patientNationalId);
 
     boolean existsByPatientNationalIdIgnoreCase(String patientNationalId);
+
+    Optional<Object> findById(String patientNationalId);
 }
+
 
 
 

@@ -17,10 +17,11 @@ import java.util.List;
 @RequestMapping("/prescriptions")
 public class PrescriptionController {
     private final PrescriptionService prescriptionService;
-    @PostMapping("/create-prescription-by-patient-national-id-and-doctor-national-id/create")
-    public List<Prescription> createPrescription(@RequestParam String patientNationalId, @RequestParam String doctorNationalId, LocalDate medicalRecordCreationDate) {
-        List<String> createdPrescriptions = prescriptionService.createPrescription(patientNationalId,  doctorNationalId,medicalRecordCreationDate);
-        return prescriptionService.getPrescriptionsForPatient(patientNationalId);
+
+  @PostMapping("/create-prescription-by-medical-record-id")
+    public List<Prescription> createPrescription(@RequestParam Long id) {
+        List<String> createdPrescriptions = prescriptionService.createPrescription(id);
+        return prescriptionService.getPrescriptionsForPatient(id);
     }
 
 
@@ -31,9 +32,9 @@ public class PrescriptionController {
     }
 
     @DeleteMapping("delete-prescription-by-patient-national-id/{patientNationalId}")
-    public ResponseEntity<Void> deletePrescription(@PathVariable String patientNationalId) {
+    public ResponseEntity<Prescription> deletePrescription(@PathVariable String patientNationalId) {
         prescriptionService.deletePrescriptionByPatientNationalId(patientNationalId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("update-prescription-by-patient-national-id/{id}")
@@ -44,10 +45,32 @@ public class PrescriptionController {
     public boolean isMedicationProvided(@PathVariable Long prescriptionId) {
         return prescriptionService.isMedicationProvided(prescriptionId);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // getPrescriptionsForPatient
     @GetMapping("/get-prescriptions-for-patient/{patientNationalId}")
-    public List<Prescription> getPrescriptionsForPatient(@PathVariable String patientNationalId) {
-        return prescriptionService.getPrescriptionsForPatient(patientNationalId);
+    public List<Prescription> getPrescriptionsForPatient(@PathVariable Long id) {
+        return prescriptionService.getPrescriptionsForPatient(id);
     }
     @GetMapping("/is-medication-provided/{patientNationalId}")
     public boolean isMedicationProvided(@PathVariable String patientNationalId) {

@@ -2,8 +2,11 @@ package zw.co.danhiko.medichronicle.service.medichronicle.impl.prescriptionImpl;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import zw.co.danhiko.medichronicle.dto.Pills.PillAvailabilityDTO;
+import zw.co.danhiko.medichronicle.dto.Pills.PillsDetailsDTO;
 import zw.co.danhiko.medichronicle.dto.Prescription.PrescriptionDTO;
 import zw.co.danhiko.medichronicle.models.Pharmacy.Pharmacy;
 import zw.co.danhiko.medichronicle.models.PrescriptionDetails.Prescription;
@@ -16,7 +19,7 @@ import zw.co.danhiko.medichronicle.repository.Prescription.PrescriptionRepositor
 import zw.co.danhiko.medichronicle.repository.doctor.DoctorRepository;
 import zw.co.danhiko.medichronicle.repository.patient.PatientRepository;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,35 +29,50 @@ import java.util.Optional;
 @Transactional
 public class PrescriptionServiceImpl implements PrescriptionService {
 
+
     private PrescriptionRepository prescriptionRepository;
     private PatientRepository patientRepository;
     private DoctorRepository doctorRepository;
     private PharmacyRepository pharmacyRepository;
     private MedicalRecordsRepository medicalRecordRepository;
 
+
     @Override
-    public List<String> createPrescription(String patientNationalId, String doctorNationalId, LocalDate medicalRecordCreationDate) {
-    // check if the patient exists based on the provided national ID
-        Optional<Patient> patient = patientRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
-        if (patient.isEmpty()) {
-            throw new RuntimeException("Patient not found with id: " + patientNationalId);
-        }
-        // check if the doctor exists based on the provided national ID
-        Optional<Doctor> doctor = doctorRepository.findByDoctorNationalIdIgnoreCase(doctorNationalId);
-        if (doctor.isEmpty()) {
-            throw new RuntimeException("Doctor not found with id: " + doctorNationalId);
-        }
-        // check if the medical record exists based on the provided national ID
-        Optional<MedicalRecords> medicalRecord = medicalRecordRepository.findByPatientNationalIdIgnoreCaseAndDayAdmitted(patientNationalId, medicalRecordCreationDate);
+    public List<String> createPrescription(Long id) {
+        // Check if the medical record exists based on the provided ID
+        Optional<MedicalRecords> medicalRecord = medicalRecordRepository.findById(id);
         if (medicalRecord.isEmpty()) {
-            throw new RuntimeException("Medical record not found with id: " + patientNationalId);
+            throw new RuntimeException("Medical record not found with id: " + id);
         }
-        // create a new prescription
+
+        // Create a new prescription
         Prescription prescription = Prescription.builder()
                 .prescription(medicalRecord.get().getPrescription())
                 .build();
         prescriptionRepository.save(String.valueOf(prescription));
         return List.of(String.valueOf(prescription));
+    }
+
+    public List<PillsDetailsDTO> parsePrescription(String prescription) {
+        List<PillsDetailsDTO> pills = new ArrayList<>();
+        String[] pillDetails = prescription.split(",");
+
+        for (String detail : pillDetails) {
+            String[] parts = detail.trim().split(" ");
+            if (parts.length == 3) {
+                String name = parts[0];
+                String dosage = parts[1];
+                String frequency = parts[2];
+
+                PillsDetailsDTO pill = new PillsDetailsDTO();
+                pill.setName(name);
+                pill.setDosage(dosage);
+                pill.setFrequency(frequency);
+                pills.add(pill);
+            }
+        }
+
+        return pills;
     }
 
     @Override
@@ -79,16 +97,17 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         return null;
     }
 
+
     @Override
     public boolean isMedicationProvided(Long prescriptionId) {
         return false;
     }
 
     @Override
-    public Prescription updatePrescriptionById(String patientNationalId, PrescriptionDTO prescriptionDTO) {
+    public Prescription updatePrescriptionById(String patientNationalId, PrescriptionDTO prescriptionDTO, Long prescriptionId) {
         // Retrieve the existing prescription by ID
-        Prescription existingPrescription = prescriptionRepository.findById(patientNationalId)
-                .orElseThrow(() -> new RuntimeException("Prescription not found with id: " +patientNationalId));
+        Prescription existingPrescription = (Prescription) prescriptionRepository.findById(String.valueOf(prescriptionId))
+                .orElseThrow(() -> new RuntimeException("Prescription not found with id: " + prescriptionId));
 
         // Update fields of the existing prescription
       //  existingPrescription.setPrescription(prescriptionDTO.getPrescription());
@@ -116,9 +135,25 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
-    public List<Prescription> getPrescriptionsForPatient(String patientNationalId) {
-        return null;
+    public List<Prescription> getPrescriptionsForPatient(Long id) {
+        return List.of();
     }
+
+
+    public List<PillAvailabilityDTO> checkPillsAvailability(String prescription, List<String> availablePills) {
+        List<PillsDetailsDTO> prescribedPills = parsePrescription(prescription);
+        List<PillAvailabilityDTO> result = new ArrayList<>();
+
+        for (PillsDetailsDTO pill : prescribedPills) {
+            PillAvailabilityDTO pillAvailability = new PillAvailabilityDTO();
+            pillAvailability.setPillDetails(pill);
+            pillAvailability.setProvided(availablePills.contains(pill.getName()));
+            result.add(pillAvailability);
+        }
+
+        return result;
+    }
+
 
 
 }

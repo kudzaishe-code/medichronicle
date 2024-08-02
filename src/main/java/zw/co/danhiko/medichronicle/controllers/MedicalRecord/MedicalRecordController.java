@@ -17,54 +17,39 @@ import java.util.List;
 public class MedicalRecordController {
 
     private final MedicalRecordService medicalRecordService;
-//    @PostMapping("/create-medical-record/{patientNationalId}/{doctorNationalId}")
-//    public ResponseEntity<?> createMedicalRecord(@RequestBody  PatientTreatmentRequest patientTreatmentRequest,String hospitalAddress,String patientNationalId,String doctorNationalId) {
-//        // Logic to handle the creation of a medical record
-//        medicalRecordService.createPatientMedicalRecord(patientTreatmentRequest,hospitalAddress, doctorNationalId, patientNationalId);
-//        return ResponseEntity.ok().build();
-//    }
-  //  @PostMapping("/create-patient-medical-record")
- //   public ResponseEntity<MedicalRecords> createPatientMedicalRecord(@RequestBody PatientTreatmentRequest patientTreatmentRequest, @RequestParam String doctorNationalId, @RequestParam String patientNationalId) {
- //       return medicalRecordService.createPatientMedicalRecord(patientTreatmentRequest, doctorNationalId, patientNationalId);
-//}
+
     @GetMapping("/get-all-patients-medical-records")
     public List<MedicalRecords> getAllPatientsMedicalRecords() {
         return medicalRecordService.getAllPatientsMedicalRecords();
     }
-    @GetMapping("/get-all-patients-medical-records-by-doctor-national-Id/{doctorNationalId}")
-    public List<MedicalRecords> getAllPatientsMedicalRecordsByDoctorNationalId(@PathVariable String doctorNationalId) {
-        return medicalRecordService.getAllPatientsMedicalRecordsByDoctorNationalId(doctorNationalId);
-    }
-
 
     @DeleteMapping("/delete/{patientNationalId}")
     public ResponseEntity<MedicalRecords> deletePatient(@PathVariable String patientNationalId) {
         return medicalRecordService.deletePatientMedicalRecordsByPatientNationalId(patientNationalId);
     }
 
-    @GetMapping("/get-patient-medical-records-by-patient-national-id/{patientNationalId}")
-    public List<MedicalRecords> getPatientMedicalRecordByPatientNationalId(@PathVariable String patientNationalId){
-        return medicalRecordService.getPatientMedicalRecordByPatientNationalId(patientNationalId);
-    }
-
+    //    @GetMapping("/get-patient-medical-records-by-patient-national-id/{patientNationalId}")
+//    public ResponseEntity<MedicalRecords> getPatientMedicalRecordByPatientNationalId(@PathVariable String patientNationalId){
+//        return medicalRecordService.getAllPatientMedicalRecordByPatientNationalId(patientNationalId);
+//    }
     @PutMapping("/update/{patientNationalId}")
     public ResponseEntity<MedicalRecords> updatePatientMedicalRecordsByPatientNationalId(@PathVariable String patientNationalId,
-                                                                                         @RequestBody Patient patient){
+                                                                                         @RequestBody Patient patient) {
         return medicalRecordService.updatePatientMedicalRecordsByPatientNationalId(patientNationalId, patient);
     }
 
-    @GetMapping("/get-patient-medical-records-by-doctor-national-id/{doctorNationalId}")
-    public List<MedicalRecords> getPatientMedicalRecordsByDoctorNationalId(@PathVariable String doctorNationalId){
-        return medicalRecordService.getPatientMedicalRecordsByDoctorNationalId(doctorNationalId);
-    }
     @DeleteMapping
-    public ResponseEntity<MedicalRecords> deleteAllMedicalRecords(){
+    public ResponseEntity<MedicalRecords> deleteAllMedicalRecords() {
         return medicalRecordService.deleteAllMedicalRecords();
-
     }
-@PostMapping("/create-medical-record")
-public ResponseEntity<MedicalRecords> createMedicalRecord(@RequestBody PatientTreatmentRequest patientTreatmentRequest){
 
-    return medicalRecordService.createMedicalRecord(patientTreatmentRequest);
-}
+    @PostMapping("/create-medical-record")
+    public ResponseEntity<MedicalRecords> createMedicalRecord(@RequestBody PatientTreatmentRequest patientTreatmentRequest) {
+        return medicalRecordService.createMedicalRecord(patientTreatmentRequest);
+    }
+
+    @GetMapping("/get-patient-medical-records-by-patient-national-id/{patientNationalId}")
+    public List<MedicalRecords> getAllPatientMedicalRecordByPatientNationalId(@PathVariable String patientNationalId) {
+        return medicalRecordService.getAllPatientMedicalRecordByPatientNationalId(patientNationalId);
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zw.co.danhiko.medichronicle.dto.hospital.HospitalRequest;
+import zw.co.danhiko.medichronicle.dto.hospital.HospitalUpdateRequest;
 import zw.co.danhiko.medichronicle.models.hospital.Hospital;
 import zw.co.danhiko.medichronicle.service.medichronicle.impl.hospital.HospitalService;
 
@@ -22,12 +23,12 @@ import java.util.Optional;
 public class HospitalController {
     @Autowired
     private  HospitalService hospitalService;
-@GetMapping("/get-hospital-details")
+@GetMapping("/get-hospital-details-by-address/{hospitalAddress}")
     public Optional<Hospital> findHospitalDetails(@PathVariable String hospitalAddress) {
         return hospitalService.findHospitalDetailsByAddress(hospitalAddress);
 
     }
-    // find hospital by name
+
     @GetMapping("/find-hospital-by-name")
     public List<Hospital> findHospitalByName(@RequestParam String hospitalName) {
         return hospitalService.findHospitalByNameIgnoreCase(hospitalName);
@@ -42,14 +43,14 @@ public class HospitalController {
     public ResponseEntity<Hospital> createHospital(HospitalRequest hospitalRequest) {
         return hospitalService.createHospital(hospitalRequest);
     }
-
-//    @PutMapping("/update-hospital")
-//    public ResponseEntity<Hospital> updateHospital(@PathVariable Long Id, Hospital hospital) {
-//        return hospitalService.updateHospital(hospital, Id);
-//    }
 @DeleteMapping("/delete-hospital")
     public ResponseEntity<Hospital> deleteHospital(String hospitalAddress) {
         return hospitalService.deleteHospital(hospitalAddress);
+    }
+    //hospital update
+    @PutMapping("/update-hospital")
+    public ResponseEntity<Hospital> hospitalUpdate(@RequestBody HospitalUpdateRequest hospitalUpdateRequest, String hospitalAddress) {
+        return hospitalService.hospitalUpdate(hospitalUpdateRequest, hospitalAddress);
     }
 
 }
