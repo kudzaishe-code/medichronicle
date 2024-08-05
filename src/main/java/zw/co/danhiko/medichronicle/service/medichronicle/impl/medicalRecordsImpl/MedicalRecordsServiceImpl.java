@@ -22,6 +22,7 @@ import zw.co.danhiko.medichronicle.repository.patient.PatientRepository;
 import zw.co.danhiko.medichronicle.service.medichronicle.exceptions.FileDoesNotExistException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,6 @@ import java.util.Optional;
     private final PatientRepository patientRepository;
     private final HospitalRepository hospitalRepository;
     private final PillRepository pillRepository;
-    private static final Logger logger = LoggerFactory.getLogger(MedicalRecordsServiceImpl.class);
 
 
 //    @Override
@@ -225,13 +225,19 @@ import java.util.Optional;
 
     @Override
     public List<MedicalRecords> getAllPatientMedicalRecordByPatientNationalId(String patientNationalId) {
-        logger.info("Fetching medical records for patientNationalId: {}", patientNationalId);
-        List<MedicalRecords> records = medicalRecordsRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
-        if (records.isEmpty()) {
-            logger.error("No medical records found for patientNationalId: {}", patientNationalId);
+
+        List<MedicalRecords> medicalRecords = medicalRecordsRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
+        if (medicalRecords.isEmpty()) {
             throw new FileDoesNotExistException("Patient medical record does not exist");
         }
-        logger.info("Found {} records for patientNationalId: {}", records.size(), patientNationalId);
-        return records;
+        return medicalRecords;
+//        logger.info("Fetching medical records for patientNationalId: {}", patientNationalId);
+//        List<MedicalRecords> records = medicalRecordsRepository.findByPatientNationalIdIgnoreCase(patientNationalId);
+//        if (records.isEmpty()) {
+//            logger.error("No medical records found for patientNationalId: {}", patientNationalId);
+//            throw new FileDoesNotExistException("Patient medical record does not exist");
+//        }
+//        logger.info("Found {} records for patientNationalId: {}", records.size(), patientNationalId);
+//        return records;
     }
 }
